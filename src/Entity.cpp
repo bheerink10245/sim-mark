@@ -28,9 +28,15 @@ private:
     std::vector<Trade> tradeLog_;
 
 public: 
-    Individual(std::string& name, long long double& cash) {
+    Individual(std::string& name, long double& cash) {
+
 
 
     }
+
+
+
+
+    
 
 };
