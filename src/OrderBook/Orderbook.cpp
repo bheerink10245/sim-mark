@@ -277,12 +277,97 @@ private:
         return trades;
     }
 
+public: 
+    Trades AddOrder(OrderPointer order){
+        if(orders_.contains(order->GetOrderId())){
+            return {};
+        }
+        if(orders->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetSide(), order->GetPrice()))
+            return{};
+        OrderPointers::iterator iterator;
+
+        if (order->GetSide() == Side::Buy){
+            auto& orders = asks_[order->GetPrice()];
+            orders.push_back(order);
+            iterator = std::next(order.begin(),orders.size() - 1);
+           
+            
+        }
+
+        orders_.insert({order->GetOrderId(), OrderEntry(){order_, iterator}});
+        return MatchOrder();
+
+    }
+    void CancelOrder(OrderId orderId) {
+        if(!orders_.contains(orderId))
+            return;
+        const auto& [order, orderItertor] = orders_.at(orderId);
+        orders_.erase(orderId);
+
+        if(orders->GetSide() == Side::Sell){
+            auto price = order->GetPrice();
+            auto price = order->GetPrice();
+            auto& orders = asks_.at(price);
+            orders.erase(orderIterator);
+            if ( orders.empty())
+                asks_.erase(price);
+        }
+        else
+        {
+            auto price = order->GetPrice();
+            auto& orders = bids_.at(price);
+            orders.erase(iterator);
+            if(orders.empty())
+                bids_.erase(price);
+        }
+    }
+
+    Trades MatchOrder(OrderModify order){
+    
+        if(!orders_.contains(order.GetOrderId()))
+            return  {};
+        }
+        const auto& [existisingOrder , _] = orders_.at(order.GetOrderId());
+        CancelOrder(order.GetOrderId());
+        return AddOrder(order.ToOrderPointer(existingOrder->GetOrderType()));
+
+
+    }
+
+    size_t Size() const {return orders_.size();}
+
+    OrderBookLevelInfos GetOrderInfos() const
+    {
+        LevelInfos bidInfos,asksInfos;
+        bidInfos.reserve(orders_.size());
+        asksInfos.reserve(order_.size());
+        auto CreateLevelInfos = [](Price price, const OrderPointers& const){
+            return LevelInfo{price, std::accumulate(orders.begin(), orders.end(), (Quantity)0, )
+                [](size_t runningSum, constOrderPointers& order)
+                {return runningSum + order->GetRemainingQuantity(); } };
+
+        };
+        for(const auto& [price,orders] : bids_)
+            bidInfos.push_back(CreateLevelInfos(price orders));
+        for(const auto& [price, odrders] : asks_)
+            asksInfos.push)back(CreateLevelInfos(price,orders));
+        return OrderBookLevelInfos{bidInfos, asksInfos};
+    }
+
+
+
 };
+
 
 
 
 int main()
 {
-    
+    Orderbook orderbook;
+    const OrderId = 1;
+    orderbook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel,orderId, Side::Buy, 100, 10));
+    std::cout<< orderBook.Size() << std::endl; // 1
+    orderBook.CancelOrder(orderId);
+    std::count << orderbook.Size() << std::endl; // 0
     return 0;
 }
