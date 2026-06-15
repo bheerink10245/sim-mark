@@ -1,0 +1,32 @@
+Overview:
+Six individuals have 6 unique "strategies" (simple side signals) that they use to create a  trade.
+One Market maker uses Orderbook as API for the 6 individuals. Marketmaker has pricing strategy for each asset.
+There are 10 tickers. Each ticker has its own fluctuation function every clk(some t-interval). Update price via some random change of some function.
+Designate a "period" of trading 
+
+
+
+S-Design
+
+All 7 individuals inherit from the Entity.hpp
+
+Class Entity -> Class Market_Maker/Class Player.
+
+All 10 tickers are objects of class Ticker.
+
+
+Entity Characteristics:
+  -Log their trades
+  -Log their P&L
+  -Check their capital
+  -Generate transaction
+
+Player Characteristics (inherits from Entity):
+  -Generate a buy and sell signal
+  -Implement their "strategy"
+
+Maker Charactersitics: 
+  -Generate a spread margin
+  -Control orderbook
+Ticker Characteristics:
+
