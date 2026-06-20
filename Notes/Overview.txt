@@ -7,7 +7,7 @@ Designate a "period" of trading
 
 
 S-Design
-
+===============================================
 All 7 individuals inherit from the Entity.hpp
 
 Class Entity -> Class Market_Maker/Class Player.
@@ -15,22 +15,22 @@ Class Entity -> Class Market_Maker/Class Player.
 All 10 tickers are objects of class Ticker.
 
 
-Entity Characteristics:
-  -Log their trades/transactions
-  -Log their P&L
-  -Check their capital
-  -Generate transaction
+Entity Characteristics
+  -Log their trades/transactions      
+  -Log their P&L                       
+  -Check their capital                
+  -Generate transaction 
 
 Player Characteristics (inherits from Entity):
   -Generate a buy and sell signal
-  -Implement their "strategy"
-    -Strat 1: Buy/Sell for %3 decrease over 5 CLKs of Negative/Positive gain
-    -Strat 2: 3 Green CLK buy
-    -Strat 3: 3 Red CLKs buy
-    -Strat 4: Buy once sell iff 5% profit margin
-    -Strat 5: Inverse strat 
-    -Start 6: If last 5 CLKs have all been negative
-  -Monitor other players 
+    -Implement their "strategy"
+      -Strat 1: Buy/Sell for %3 decrease over 5 CLKs of Negative/Positive gain
+      -Strat 2: 3 Green CLK buy
+      -Strat 3: 3 Red CLKs buy
+      -Strat 4: Buy once sell iff 5% profit margin
+      -Strat 5: Inverse strat 
+      -Start 6: If last 5 CLKs have all been negative
+    -Monitor other players 
 
 
 Maker Charactersitics (inherits from entity): 
@@ -40,10 +40,16 @@ Maker Charactersitics (inherits from entity):
 
 
 
----------------------------------------------
+
 Ticker Characteristics:
- -Generate random fluctuation ever clk  
-    -Gasussian Function
- -Generate a log of each trade
-    -Logs buyer and seller
+Function:
+  -void GeneratePriceFluctuation()
+  -void TradeExecuted(Individual, Info)
+
+
+
+===================================================
+
+
+
 

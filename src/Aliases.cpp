@@ -24,10 +24,13 @@ namespace Aliases {
     };
     struct TradeInfo
     {
+        Side m_Side;
         OrderId m_OrderId;
         Price m_price;
         Quantity m_quantity;
 
     };
+
+
 
 }

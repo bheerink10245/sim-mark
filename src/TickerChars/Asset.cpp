@@ -2,14 +2,16 @@
 #include <vector>
 #include <random>
 #include <string>
+#include <unordered_map>
 #include "OrderBook/Orderbook.cpp"
 #include "Aliases.cpp"
+#include "Entity.hpp"
 
 using Price = Aliases::Price;
 using Quantity = Aliases::Quantity;
 using TradeInfo = Orderbook::TradeInfo;
 using Symbol = Aliases::Symbol;
-
+using Side = Aliases::Side;
 
 class Ticker {
 public:
@@ -18,6 +20,7 @@ public:
     {
 
     }
+
     Ticker(Symbol ticker) 
     {
 
@@ -31,14 +34,36 @@ public:
 
     Quantity GetQuantity() const {return m_Quantity;}
 
+    void SetPrice(double change) { m_Price + change;}
 
+    /**
+     * Generates a random fluctuation based off of gaussian function 
+     * Modifes m_Price
+     * 
+     */
     void GeneratePriceFluctuation()
     {
+        std::random_device RandomObject{};
+        std::mt19937 gen{RandomObject()};
 
+        std::normal_distribution<double> Distribute{0.0,50.0};
+
+        SetPrice(Distribute);        
+
+        
     }
 
 
-    void TradeExecuted(Price price, Quantity quantity, Side side) 
+    /**
+     * Log a Trade on a ticker
+     * @param Individual: 1 of the 6 individuals that made the trade
+     * @param Info: TradeInfo obj with trade details
+     */
+    void TradeExecuted(Entity& Individual, TradeInfo& Info) 
+    {
+        m_TradeLog.emplace(Individual,Info);
+
+    }
 
 
 
@@ -48,7 +73,7 @@ private:
     Price m_Price;
     Symbol m_Ticker;
     Quantity m_Quantity;
-    std::vector<TradeInfo> m_TradeLog;
+    std::unordered_map<Entity,TradeInfo> m_TradeLog;
 
 
 };

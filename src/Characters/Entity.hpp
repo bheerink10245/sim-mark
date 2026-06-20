@@ -13,14 +13,16 @@ using TradeInfo = Aliases::TradeInfo;
 
 class Entity {
 public:
+
+
     virtual bool CapitalChecK() = 0;
 
-    virtual Aliases::Price GetProfitLoss() = 0;
+    virtual Price GetProfitLoss() = 0;
 
 
 
 
-
+protected:  
     std::vector<TradeInfo> m_TradeLog;
 };
 
