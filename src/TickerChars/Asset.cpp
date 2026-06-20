@@ -38,6 +38,8 @@ public:
     }
 
 
+    void TradeExecuted(Price price, Quantity quantity, Side side) 
+
 
 
 

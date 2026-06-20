@@ -10,5 +10,24 @@ namespace Aliases {
     using Quantity = std::uint32_t;
     using OrderId = std::uint64_t;
     using Symbol = std::string;
+    enum class Side
+    {
+        Buy,
+        Sell
+
+    };
+    enum class OrderType
+    {
+        GoodTillCancel,
+        FillAndKill,
+        Market
+    };
+    struct TradeInfo
+    {
+        OrderId m_OrderId;
+        Price m_price;
+        Quantity m_quantity;
+
+    };
 
 }

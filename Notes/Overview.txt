@@ -33,17 +33,16 @@ Player Characteristics (inherits from Entity):
   -Monitor other players 
 
 
-
-
-
 Maker Charactersitics (inherits from entity): 
   -Generate a spread margin
   -Control orderbook
   -Match orders between individuals
 
 
+
+---------------------------------------------
 Ticker Characteristics:
- -Generate random fluctuation ever clk 
+ -Generate random fluctuation ever clk  
     -Gasussian Function
  -Generate a log of each trade
     -Logs buyer and seller

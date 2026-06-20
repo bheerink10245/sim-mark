@@ -1,5 +1,14 @@
 #include "Aliases.cpp"
+#include <vector>
+#include <iostream>
 
+
+using Price = Aliases::Price;
+using Quantity = Aliases::Quantity;
+using OrderId = Aliases::OrderId;
+using Symbol = Aliases::Symbol;
+using Side = Aliases::Side;
+using TradeInfo = Aliases::TradeInfo;
 
 
 class Entity {
@@ -8,33 +17,10 @@ public:
 
     virtual Aliases::Price GetProfitLoss() = 0;
 
-    virtual 
-
-
-protected:
 
 
 
+
+    std::vector<TradeInfo> m_TradeLog;
 };
 
-class Player{
-public:
-
-private:
-
-
-
-
-};
-
-
-class Maker {
-public:
-    
-
-
-private:
-
-
-
-}

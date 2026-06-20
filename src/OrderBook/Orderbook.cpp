@@ -21,24 +21,16 @@
 
 namespace Orderbook { 
 
-    enum class OrderType
-    {
-        GoodTillCancel,
-        FillAndKill,
-        Market
-    };
 
-    enum class Side
-    {
-        Buy,
-        Sell
 
-    };
 
     using Price = Aliases::Price;
-    using Quantity = Alises::Quantity ;
+    using Quantity = Aliases::Quantity ;
     using OrderId = Aliases::OrderId;
-
+    using Side = Aliases::Side;
+    using OrderrType = Aliases::OrderType;
+    using TradeInfo = Aliases::TradeInfo;
+    
     struct LevelInfo
     {
         Price m_price;
@@ -143,16 +135,6 @@ namespace Orderbook {
     };
 
 
-    //matched order, trade object
-
-    struct TradeInfo
-    {
-        OrderId m_OrderId;
-        Price m_price;
-        Quantity m_quantity;
-
-    };
-
     class Trade
     {
     public:
@@ -173,7 +155,7 @@ namespace Orderbook {
 
     using Trades = std::vector<Trade>;
 
-    class Orderbook
+    class OrderBook
     {
     private:
         struct OrderEntry
