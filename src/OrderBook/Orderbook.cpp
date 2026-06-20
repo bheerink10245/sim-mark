@@ -28,7 +28,7 @@ namespace Orderbook {
     using Quantity = Aliases::Quantity ;
     using OrderId = Aliases::OrderId;
     using Side = Aliases::Side;
-    using OrderrType = Aliases::OrderType;
+    using OrderType = Aliases::OrderType;
     using TradeInfo = Aliases::TradeInfo;
     
     struct LevelInfo
@@ -37,8 +37,6 @@ namespace Orderbook {
         Quantity m_quantity;
 
     };
-
-
 
     using LevelInfos = std::vector<LevelInfo>;
 
@@ -133,7 +131,6 @@ namespace Orderbook {
         Side m_side;
         Quantity m_quantity;
     };
-
 
     class Trade
     {
@@ -329,7 +326,7 @@ namespace Orderbook {
             LevelInfos bidInfos,asksInfos;
             bidInfos.reserve(ORDERS.size());
             asksInfos.reserve(order_.size());
-            auto CreateLevelInfos = [](Price price, const OrderPointers& const){
+            auto CreateLevelInfos = [](Price price, const OrderPointers& const){ // mess
                 return LevelInfo{price, std::accumulate(orders.begin(), orders.end(), (Quantity)0, )
                     [](size_t runningSum, constOrderPointers& order)
                     {return runningSum + order->GetRemainingQuantity(); } };
@@ -346,9 +343,10 @@ namespace Orderbook {
 
     };
 
-
-
-
+    
+    
+    
+    
     int main()
     {
         Orderbook orderbook;
