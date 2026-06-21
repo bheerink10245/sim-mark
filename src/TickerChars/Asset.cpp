@@ -34,7 +34,7 @@ public:
 
     Quantity GetQuantity() const {return m_Quantity;}
 
-
+    void SetPrice(double change) { m_Price + change;}
 
 
 
@@ -43,6 +43,9 @@ public:
      * Log a Trade on a ticker
      * @param Individual: 1 of the 6 individuals that made the trade
      * @param Info: TradeInfo obj with trade details
+     * 
+     * 
+     * 
      */
     void TradeExecuted(Entity& Individual, TradeInfo& Info) 
     {
@@ -58,8 +61,6 @@ private:
     Price m_Price;
     Symbol m_Ticker;
     Quantity m_Quantity;
-    Quantity m_InitialQuantity;
-    Quantity m_RemaniningQuantity;
     std::unordered_map<Entity,TradeInfo> m_TradeLog;
 
 
