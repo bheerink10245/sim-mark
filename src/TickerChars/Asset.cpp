@@ -36,28 +36,16 @@ public:
 
     void SetPrice(double change) { m_Price + change;}
 
-    /**
-     * Generates a random fluctuation based off of gaussian function 
-     * Modifes m_Price
-     * 
-     */
-    void GeneratePriceFluctuation()
-    {
-        std::random_device RandomObject{};
-        std::mt19937 gen{RandomObject()};
 
-        std::normal_distribution<double> Distribute{0.0,50.0};
-
-        SetPrice(Distribute);        
-
-        
-    }
 
 
     /**
      * Log a Trade on a ticker
      * @param Individual: 1 of the 6 individuals that made the trade
      * @param Info: TradeInfo obj with trade details
+     * 
+     * 
+     * 
      */
     void TradeExecuted(Entity& Individual, TradeInfo& Info) 
     {
