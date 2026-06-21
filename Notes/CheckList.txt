@@ -1,3 +1,2 @@
 To-Do:
--Fix price fluctuation function
--Define exchange porting
+-Ticker

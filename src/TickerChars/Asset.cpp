@@ -34,24 +34,9 @@ public:
 
     Quantity GetQuantity() const {return m_Quantity;}
 
-    void SetPrice(double change) { m_Price + change;}
 
-    /**
-     * Generates a random fluctuation based off of gaussian function 
-     * Modifes m_Price
-     * 
-     */
-    void GeneratePriceFluctuation()
-    {
-        std::random_device RandomObject{};
-        std::mt19937 gen{RandomObject()};
 
-        std::normal_distribution<double> Distribute{0.0,50.0};
 
-        SetPrice(Distribute);        
-
-        
-    }
 
 
     /**
@@ -73,6 +58,8 @@ private:
     Price m_Price;
     Symbol m_Ticker;
     Quantity m_Quantity;
+    Quantity m_InitialQuantity;
+    Quantity m_RemaniningQuantity;
     std::unordered_map<Entity,TradeInfo> m_TradeLog;
 
 

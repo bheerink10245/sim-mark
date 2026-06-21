@@ -5,6 +5,7 @@ class Maker : public Entity {
 public:
 
     /** 
+     * 
      * Market maker has a complicated structure.
      * Each instance of a MarketMaker should own its own Orderbook.
      * APIs from the OrderBook follow:
