@@ -15,9 +15,12 @@ public:
      * 
      * 
      */
-    Maker(Price capital) : m_Capital{capital}
+    Maker(Price capital, Symbol name) : m_Capital{capital}, m_Name{name}
     {
-        m_OrderBook = new Orderbook::OrderBook;
+    m_OrderBook = new Orderbook::OrderBook;
+
+
+
     }
 
     
@@ -26,6 +29,7 @@ public:
 
 private:
     Price m_Capital;
+    Symbol m_Name;
     Orderbook::OrderBook* m_OrderBook;
 
 

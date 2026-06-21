@@ -16,12 +16,7 @@ using Side = Aliases::Side;
 class Ticker {
 public:
 
-    Ticker(Symbol ticker, Price price)
-    {
-
-    }
-
-    Ticker(Symbol ticker) 
+    Ticker(Symbol ticker)
     {
 
     }
@@ -34,7 +29,6 @@ public:
 
     Quantity GetQuantity() const {return m_Quantity;}
 
-    void SetPrice(double change) { m_Price + change;}
 
 
 
