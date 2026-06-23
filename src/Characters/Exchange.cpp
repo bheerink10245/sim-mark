@@ -27,7 +27,7 @@ public:
             std::mt19937    Engine(RandomDevice);
             std::uniform_int_distribution<int>  distr(0, 10000);  
 
-            Symbol
+            
 
 
         }
@@ -38,7 +38,7 @@ public:
             std::mt19937    Engine(RandomDevice);
             std::uniform_int_distribution<int>  distr(0, 10000);  
             Symbol NumericalString{distr(Engine)};
-            m_PlayerVector.emplace(NumericalString, 100000);
+            m_PlayerVector.emplace_back(NumericalString, 100000);
 
 
         }
