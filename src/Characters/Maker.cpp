@@ -1,36 +1,25 @@
+
+#include "Orderbook.cpp"
 #include "Entity.hpp"
-#include "OrderBook/Orderbook.cpp"
+
 
 class Maker : public Entity {
 public:
 
-    /** 
-     * 
-     * Market maker has a complicated structure.
-     * Each instance of a MarketMaker should own its own Orderbook.
-     * APIs from the OrderBook follow:
-     * OrderBook --> Maker --> Exchange --> Indviduals
-     * Porting features from 
-     * 
-     * 
-     * 
-     */
-    Maker(Price capital, Symbol name) : m_Capital{capital}, m_Name{name}
+    Maker(const Symbol& name, const std::vector<Symbol>& Service_Tickers) : m_Name{name} 
     {
-    m_OrderBook = new Orderbook::OrderBook;
-
-
-
+        
     }
+
+
 
     
     
 
 
 private:
-    Price m_Capital;
+    Price m_Capital {1000000000.00};// 10 million 
     Symbol m_Name;
-    Orderbook::OrderBook* m_OrderBook;
 
 
 };

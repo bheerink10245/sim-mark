@@ -1,55 +1,67 @@
-Overview:
-Six individuals have 6 unique "strategies" (simple side signals) that they use to create a  trade.
-One Market maker uses Orderbook as API for the 6 individuals. Marketmaker has pricing strategy for each asset.
-There are 10 tickers. Each ticker has its own fluctuation function every clk(some t-interval). Update price via some random change of some function.
-Designate a "period" of trading 
+Intialization Order:
+Ticker # --> Player # --> Market Maker #(MM)
+
+Dependent Simulatrities:
+-Ticker # dictates the # of orderbooks each MM owns.
+
+Interdependent Communication & Characteris
+
+Object Characteristics:
+
+Exchange:
+-Constructor: 
+-Destructor:
+Member Functions:
+|
+|
+|
+Member Variables:
+|Exchange_Cycle_Update(), Returns MarketData Object :: Executes every CLK, the main parameter for every Player Strategy
+|
+|
 
 
 
-S-Design
-===============================================
-All 7 individuals inherit from the Entity.hpp
-
-Class Entity -> Class Market_Maker/Class Player.
-
-All 10 tickers are objects of class Ticker.
-
-
-Entity Characteristics
-  -Log their trades/transactions      
-  -Log their P&L                       
-  -Check their capital                
-  -Generate transaction 
-
-Player Characteristics (inherits from Entity):
-  -Generate a buy and sell signal
-    -Implement their "strategy"
-      -Strat 1: Buy/Sell for %3 decrease over 5 CLKs of Negative/Positive gain
-      -Strat 2: 3 Green CLK buy
-      -Strat 3: 3 Red CLKs buy
-      -Strat 4: Buy once sell iff 5% profit margin
-      -Strat 5: Inverse strat 
-      -Start 6: If last 5 CLKs have all been negative
-    -Monitor other players 
-
-
-Maker Charactersitics (inherits from entity): 
-  -Generate a spread margin
-  -Control orderbook
-  -Match orders between individuals
+Ticker:
+-Constructor: 
+-Destructor:
+Member Functions:
+|
+|
+|
+Member Variables:
+|
+|
+|
 
 
 
 
-Ticker Characteristics:
-Function:
-  -void GeneratePriceFluctuation()
-  -void TradeExecuted(Individual, Info)
+Maker:
+-Constructor: 
+-Destructor:
+Member Functions:
+|
+|
+|
+Member Variables:
+|
+|
+|
 
 
 
-===================================================
 
-
+Player:
+-Constructor: 
+-Destructor:
+Member Functions:
+|
+|
+|
+Member Variables:
+|
+|
+|
 
 

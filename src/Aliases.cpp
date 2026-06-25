@@ -26,8 +26,8 @@ namespace Aliases {
     {
         Side m_Side;
         OrderId m_OrderId;
-        Price m_price;
-        Quantity m_quantity;
+        Price m_Price;
+        Quantity m_Quantity;
 
     };
 

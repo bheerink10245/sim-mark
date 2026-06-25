@@ -1,54 +1,46 @@
 #include "Aliases.cpp" 
-#include <random>
-#include "Player.cpp"
 #include "Maker.cpp"
-#include "TickerChars/Asset.cpp"
+#include "Player.cpp"
+#include "TickerChars\Asset.cpp"
+
+
+#include <random>
 #include <string>
+#include <queue> 
+
+
 
 class Exchange{
 public:
     Exchange(size_t Tickers, size_t Makers, size_t Players) 
     : m_TickerNum{Tickers}, m_MakerNum{Makers}, m_PlayerNum{Players}
     {
-        for(size_t i {}; i < m_TickerNum < ++i)
-        {
-            std::random_device RandomDevice;
-            std::mt19937    Engine(RandomDevice);
-            std::uniform_int_distribution<int>  distr(0, 10000);
-
-
-
-
-        }
-
-        for(size_t i {}; i < m_MakerNum; ++i)
-        {
-            std::random_device RandomDevice;
-            std::mt19937    Engine(RandomDevice);
-            std::uniform_int_distribution<int>  distr(0, 10000);  
-
-            
-
-
-        }
-
-        for(size_t i {}; i < m_PlayerNum; ++i)
-        {
-            std::random_device RandomDevice;
-            std::mt19937    Engine(RandomDevice);
-            std::uniform_int_distribution<int>  distr(0, 10000);  
-            Symbol NumericalString{distr(Engine)};
-            m_PlayerVector.emplace_back(NumericalString, 100000);
-
-
-        }
+        
         
 
     }
 
+    /**
+    * Contains all of the data of exchange
+    * Data Included 
+    * 1. Each Ticker and all of its public data member (Price, TradeLog, Volume, Quantity on Market, Quantity Owned...)
+    * 2. Each Players' trades from the Cycle Update (Trade Log)
+    * 3. Market Makers exchanges and with whom, 
+    *
+    */
+    class MarketData 
+    {
+    public:
+        MarketData() : 
+        {}
 
 
+    };
 
+    MarketData Exchange_Cycle_Update()
+    {
+
+    }
     
 
 

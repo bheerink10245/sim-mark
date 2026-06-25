@@ -1,6 +1,9 @@
 #include "Aliases.cpp"
+#include <queue>
 #include <vector>
 #include <iostream>
+#include <unordered_map>
+
 
 
 using Price = Aliases::Price;
@@ -8,21 +11,18 @@ using Quantity = Aliases::Quantity;
 using OrderId = Aliases::OrderId;
 using Symbol = Aliases::Symbol;
 using Side = Aliases::Side;
+using OrderType = Aliases::OrderType;
 using TradeInfo = Aliases::TradeInfo;
 
 
-class Entity {
+class Entity  
+{
 public:
-
-
-    virtual bool CapitalChecK() = 0;
-
-    virtual Price GetProfitLoss() = 0;
+    Entity() 
+    : 
+    {}
 
 
 
 
-protected:  
-    std::vector<TradeInfo> m_TradeLog;
-};
-
+}; 

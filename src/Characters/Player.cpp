@@ -1,10 +1,12 @@
 #include "Entity.hpp"
 
 
+
+
 class Player : public Entity {
 public:
-    Player(Symbol name, Price capital)
-        : m_Name{name}, m_Capital{capital}
+    template <typename Strategy>
+    Player(Symbol name, Strategy strategy_function ) : m_Name{name}
     {}
 
     
@@ -19,8 +21,8 @@ public:
 private:
 
     Symbol m_Name;
-    Price m_Capital
-
+    Price m_Capital {100000.00}; // 100 Thousand
+    
 
 
 
