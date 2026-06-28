@@ -1,0 +1,57 @@
+
+Exchange:
+    Has an input Container that is the porting point for all players.
+    Manages all other characters.
+    Creates a mutli-cast object called MarketData that takes a snapshot of the current status of all the tickers in the exchange aswell as past.
+    The Clock object lives inside of the Exchange 
+    Action per Tick:
+        -Cast each order in I-Container to AtomicOrder object
+        -Route the AtomicOrder to its respective Ticker queue
+        -Log each Order that is routed
+        -Log each action in tickers
+        -Package a MarketData OBJ at end of Clock
+        -Next Clock, Send this MarketData Out
+
+
+
+Ticker:
+    A seperate object exits within Ticker class called TickerData which contains all of the quantifiedable data of it.
+        e.g: Price, Quantity, Volume Traded in last Tick, Voltatility.
+    Use Pimpl for mutation seperation and safety
+    Has a single queue to process each order 1-by-1 per Tick
+    Function to recalculate TickerData per tick
+    Action per Tick:
+        -Take the object from queue
+        -Transfer object into OrderBook for its Ticker
+        -Run CanMatch() on Order
+        -If True, fullfill order, update OB positions 
+        -If false, destroy order, notify Player
+        -Update ticker data
+Player:
+    Has a strategy parameter that is passed in via the main function.
+    Has a map that holds positions
+    Has a map that holds all previous orders
+    Variable that holds their P&L
+    Action per Tick:
+        =Strategy Functor takes MarketData as parameter
+        -Strategy Generates Signal Object
+        -Signal Object is Processed by OrderBuild()
+        -If Signal Object Contains empty signal, Orderbuild exits, else it creates a Trade Object and returns and Order Object
+        -Order Object is enqueued to Exchange I-Container
+        -Log the Order Object in its TradeLog (Status changes based on ability to fulfill) 
+        -Emplace the Trade in position map if Order is filled
+        -Mutate its capital based off the Order's produced 
+        -Mutate its P&L of its positions
+Maker:
+    Has a map that holds positions
+    Has a map that holds all previous orders
+    Variable that holds their P&L
+    Variable to hold capital number
+    Upon init the Maker owns all the shares of the Ticker.
+    Action per Tick:
+        -Destroy all current orders in Exchange
+        -Strip Market Data Batch
+        -Process Market Data Batch
+        -Readjust the new liquduity while maintaining 5% spread 
+        -Enqueue new liquidity batch to Exchange I-Container
+        -Log new Batch

@@ -14,15 +14,7 @@ using Side = Aliases::Side;
 using OrderType = Aliases::OrderType;
 using TradeInfo = Aliases::TradeInfo;
 
-
-class Entity  
-{
-public:
-    Entity() 
-    : 
-    {}
+class Entity {
 
 
-
-
-}; 
+};

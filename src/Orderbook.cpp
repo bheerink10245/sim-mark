@@ -189,7 +189,7 @@ namespace Orderbook {
         Trades MatchOrders()
         {
             Trades trades;
-            Trade.reserve(ORDERS.size());
+            Trades.reserve(ORDERS.size());
 
             while (true)
             {
@@ -343,17 +343,15 @@ namespace Orderbook {
 
     
     
-    
-    
-    int main()
-    {
-        Orderbook orderbook;
-        const OrderId = 1;
-        orderbook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel,orderId, Side::Buy, 100, 10));
-        std::cout<< orderBook.Size() << std::endl; // 1
-        orderBook.CancelOrder(orderId);
-        std::count << orderbook.Size() << std::endl; // 0
-        return 0;
-    }
-
 }
+int main()
+{
+    Orderbook::OrderBook orderbook;
+    const OrderId = 1;
+    orderbook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel,orderId, Side::Buy, 100, 10));
+    std::cout<< orderbook.Size() << std::endl; // 1
+    orderBook.CancelOrder(orderId);
+    std::cout << orderbook.Size() << std::endl; // 0
+    return 0;
+}
+

@@ -19,8 +19,7 @@ namespace Aliases {
     enum class OrderType
     {
         GoodTillCancel,
-        FillAndKill,
-        Market
+        FillorKill,
     };
     struct TradeInfo
     {
@@ -28,6 +27,23 @@ namespace Aliases {
         OrderId m_OrderId;
         Price m_Price;
         Quantity m_Quantity;
+
+    };
+    class Trade
+    {
+    public:
+        Trade(const TradeInfo& bidTrade, const TradeInfo& askTrade)
+        : m_BidTrade{bidTrade}
+        , m_AskTrade {askTrade}
+        {}
+
+        const TradeInfo& GetBidTrade() const {return m_BidTrade;}
+        const TradeInfo& GetAskTrade() const {return m_AskTrade;}
+
+
+    private:
+        TradeInfo m_BidTrade;
+        TradeInfo m_AskTrade;
 
     };
 
