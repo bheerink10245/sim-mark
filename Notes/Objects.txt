@@ -5,13 +5,14 @@ Exchange:
     Creates a mutli-cast object called MarketData that takes a snapshot of the current status of all the tickers in the exchange aswell as past.
     The Clock object lives inside of the Exchange 
     Action per Tick:
-        -Cast each order in I-Container to AtomicOrder object
+        -Cast each order in I-Container to ExchangeOrder object
         -Route the AtomicOrder to its respective Ticker queue
         -Log each Order that is routed
         -Log each action in tickers
         -Package a MarketData OBJ at end of Clock
         -Next Clock, Send this MarketData Out
 
+ExchangeOrder
 
 
 Ticker:
@@ -27,6 +28,8 @@ Ticker:
         -If True, fullfill order, update OB positions 
         -If false, destroy order, notify Player
         -Update ticker data
+
+
 Player:
     Has a strategy parameter that is passed in via the main function.
     Has a map that holds positions
@@ -42,6 +45,8 @@ Player:
         -Emplace the Trade in position map if Order is filled
         -Mutate its capital based off the Order's produced 
         -Mutate its P&L of its positions
+
+
 Maker:
     Has a map that holds positions
     Has a map that holds all previous orders
@@ -55,3 +60,23 @@ Maker:
         -Readjust the new liquduity while maintaining 5% spread 
         -Enqueue new liquidity batch to Exchange I-Container
         -Log new Batch
+
+Clock:
+
+
+
+
+---------------------------------------------------------------
+Types:
+    ORDER
+        Order :: OrderType && Trade
+        Trade :: TimeStamp/s && TradeInfo
+        TimeStamp/s :: Time @ Which Can Match Returns Value && Time @ Which Order enters into Exchang I-Container
+        TradeInfo :: Side && OrderId && Price && Quantity
+
+    SIGNAL
+        Contains a bool which provides whether or not the Strategy wants to make a Trade
+        Contains the Side
+        Contains Quantity
+
+
