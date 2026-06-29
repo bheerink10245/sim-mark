@@ -1,0 +1,11 @@
+Initilization Sequence:
+(Assumes Strategy Functors & Exchange is Contruscted w/ its 3 parameters.)
+(All of this exist within Exchange Object)
+1. Tickers constructed w/ each individual orderbook 
+2. Ticker characteristics generated: Symbols, Inside Ticker Data: Average Price Generated, Quantity count, Ticker
+3. Intiiailze MM liquidity batches
+4. Liquidity Batches populate each ticker orderbook
+5. Exchang packages first Market Data Object
+6. Player objects constructed with their Strategy
+7. MarketData Multi-Cast to Players and MMs
+8. FIRST CLOCK
