@@ -12,21 +12,18 @@ Exchange:
         -Package a MarketData OBJ at end of Clock
         -Next Clock, Send this MarketData Out
 
-ExchangeOrder
-
 
 Ticker:
     A seperate object exits within Ticker class called TickerData which contains all of the quantifiedable data of it.
         e.g: Price, Quantity, Volume Traded in last Tick, Voltatility.
     Use Pimpl for mutation seperation and safety
-    Has a single queue to process each order 1-by-1 per Tick
+    Has a MPSC to process each order 1-by-1 
     Function to recalculate TickerData per tick
-    Action per Tick:
-        -Take the object from queue
-        -Transfer object into OrderBook for its Ticker
-        -Run CanMatch() on Order
-        -If True, fullfill order, update OB positions 
-        -If false, destroy order, notify Player
+    Action per Tick: (__FIX__)
+        -Matching Engine takes value from MPSC
+        -Matching Engine returns with its values
+            -If True, fullfill order, update OB positions 
+            -If false, destroy order, notify Player
         -Update ticker data
 
 
@@ -71,8 +68,8 @@ Types:
     ORDER
         Order :: OrderType && Trade
         Trade :: TimeStamp/s && TradeInfo
-        TimeStamp/s :: Time @ Which Can Match Returns Value && Time @ Which Order enters into Exchang I-Container
-        TradeInfo :: Side && OrderId && Price && Quantity
+        TimeStamp/s :: Time @ Matching Engine Returns && Time @ Which Order leaves Particpant
+        TradeInfo :: Side && OrderId && Price && Qan Match Retuuantity
 
     SIGNAL
         Contains a bool which provides whether or not the Strategy wants to make a Trade

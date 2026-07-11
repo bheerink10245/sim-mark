@@ -3,14 +3,16 @@
 
 class Maker : public Entity {
 
-    // Constructor for Exchange Init
-    Maker(const Symbol& Name)
+
+
+    
+    
+    
+    void PerformPerCLK()
     {
+        
 
+        
     }
-
-    void ExecutionLogging(const Trade&)
-
-
 
 };

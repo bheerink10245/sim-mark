@@ -1,43 +1,75 @@
 #include "Aliases.cpp" 
 #include "Maker.cpp"
 #include "Player.cpp"
-#include "TickerChars\Asset.cpp"
+#include "Asset.cpp"
+#include "Timer.cpp"
+
 
 
 #include <random>
 #include <string>
 #include <queue> 
 
-
+//Unique Functors
 
 class Exchange{
 public:
-    Exchange(size_t Tickers, size_t Makers, size_t Players) 
-    : m_TickerNum{Tickers}, m_MakerNum{Makers}, m_PlayerNum{Players}
+    //Exhcange is specific to machine
+    //Avaiable Core count;
+    Exchange(long long Runs) : m_Runs{Runs}
     { 
-        
-        
+
+        // Create Tickers
+        Ticker* A_Tick = new Ticker()
+        //Create Particpants
+        //Create Makers
+
+        // Cycle Loop
+
+        while(m_Clock->GetIterationCount() <= m_Runs)
+        {
+            // Every Ticker, Particpant, and MarketMaker needs to run
+            // their performPerCLK. This has to be done in parallel.
+            
+            m_Clock->CLK();
+        }
+
 
     }
 
 
-    class MarketData 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    struct MarketData 
     {
     public:
         MarketData() : 
         {}
-    
-        MarketData Exchange_Cycle_Update()
-        {
 
-        }
 
     };
 
 
 private:
-    size_t m_TickerNum;
-    size_t m_MakerNum;
-    size_t m_PlayerNum;
+
+    Timer* m_Clock = new Timer{};
+    long long m_Runs;
 
 };
