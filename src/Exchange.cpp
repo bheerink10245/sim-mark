@@ -20,8 +20,12 @@ public:
     { 
 
         // Create Tickers
-        Ticker* A_Tick = new Ticker()
-        //Create Particpants
+        Ticker* Ticker_A = new Ticker("A");
+        Ticker* Ticker_B = new Ticker("B");
+        Ticker* Ticker_C = new Ticker("C");
+        Ticker* Ticker_D = new Ticker("D");
+
+
         //Create Makers
 
         // Cycle Loop
@@ -70,6 +74,7 @@ public:
 private:
 
     Timer* m_Clock = new Timer{};
+    std::shared_ptr<std::vector<Ticker>> m_TickerContainer = new std::vector<Ticker>;
     long long m_Runs;
 
 };

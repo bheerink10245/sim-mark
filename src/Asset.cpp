@@ -48,7 +48,7 @@ public:
     public:
         TickerData() : m_Price{}, m_Quantity{100000}
         { //Intilaize Random Price
-            
+                 
 
         }
 
@@ -103,7 +103,7 @@ private:
 
     Symbol m_Name;
     std::unique_ptr<TickerData> m_DataPtr = new TickerData;
-    std::shared_ptr<Orderbook::OrderBook> m_OrderBookPtr = new OrderBook;
+    std::unique_ptr<Orderbook::OrderBook> m_OrderBookPtr = new OrderBook;
 
 
 
