@@ -1,16 +1,13 @@
 
-#include <iostream>
+
 #include <chrono>
 
-
-
- 
 
 
 class Timer{
 public:
 
-    Timer() : 
+    Timer(const long long& iterCount) : m_IterationCount{iterCount}
     {
         m_Start = std::chrono::steady_clock::now();
     }

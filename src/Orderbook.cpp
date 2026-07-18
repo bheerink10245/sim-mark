@@ -17,7 +17,7 @@
 #include <format>
 #include "Aliases.cpp"
 
-namespace Orderbook { 
+namespace OrderBook { 
 
 
 
@@ -150,9 +150,9 @@ namespace Orderbook {
 
     using Trades = std::vector<Trade>;
 
-    class OrderBook
+    struct OrderBook
     {
-    private:
+    public:
         struct OrderEntry
         {
             OrderPointer order_(nullptr);
@@ -163,27 +163,6 @@ namespace Orderbook {
         std::map<Price,OrderPointers, std::greater<Price>> MEM_BIDS;
         std::map<Price,OrderPointers, std::less<Price>> MEM_ASKS;
         std::unordered_map<OrderId,OrderEntry> ORDERS;
-
-        bool CanMatch(Side side, Price price) const
-        {
-            if (side == Side::Buy)
-            {
-                if(MEM_ASKS.empty())
-                    return false;
-                const auto& [bestAsk, _] = *MEM_ASKS.begin();
-                return price >= bestAsk;
-
-            }
-            else
-            {
-                if(MEM_BIDS.empty())
-                    return false;
-                const auto& [bestBid, _] = *MEM_BIDS.begin();    
-                    return price <= bestBid;
-                
-            }
-        }
-
 
 
         Trades MatchOrders()
@@ -355,3 +334,4 @@ int main()
     return 0;
 }
 
+ 

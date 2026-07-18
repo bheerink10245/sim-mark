@@ -1,3 +1,5 @@
+// This simulation is run on a i7-14700K(Raptor Lake Refresh), 20 cores, 28 threads. 8 P-Cores, 12 E-Cores
+
 #include "Aliases.cpp" 
 #include "Maker.cpp"
 #include "Player.cpp"
@@ -5,7 +7,7 @@
 #include "Timer.cpp"
 
 
-
+#include <thread> 
 #include <random>
 #include <string>
 #include <queue> 
@@ -30,11 +32,23 @@ public:
 
         // Cycle Loop
 
+        void p_funcs();
+        void m_funcs();
+        void t_funcs();
+
+
         while(m_Clock->GetIterationCount() <= m_Runs)
         {
-            // Every Ticker, Particpant, and MarketMaker needs to run
-            // their performPerCLK. This has to be done in parallel.
-            
+            // I have no idea if this works
+            std::thread PlayerThread(p_funcs);
+            std::thread MakerThread(m_funcs);
+            std::thread TickerThread(t_funcs);
+
+
+            PlayerThread.join();
+            MakerThread.join();
+            TickerThread.join();
+
             m_Clock->CLK();
         }
 

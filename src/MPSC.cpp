@@ -13,6 +13,8 @@ struct Node {
 
 };
 
+
+
 class MPSC{
 
 public:
@@ -21,26 +23,31 @@ public:
         stub->next.store(nullptr)
 
     }
+
+    ~MPSC()
+    {
+        
+    }
     void push(Node* node)
     {
-        node->next.store(nullptr, memory_order_relaxed);
-        Node* prev = tail.exchange(node, memory_order_acq_rel);
-        prev->next.store(node, memory_order_release);
+        node->next.store(nullptr, std::memory_order_relaxed);
+        Node* prev = tail.exchange(node, std::memory_order_acq_rel);
+        prev->next.store(node, std::memory_order_release);
 
     }
 
     Node* pop()
     {
-        Node* head_copy = head.load(memory_order_relaxed);
-        Node* next = head_copy->next.load(memory_order_accquire);
+        Node* head_copy = head.load(std::memory_order_relaxed);
+        Node* next = head_copy->next.load(std::memory_order_accquire);
 
         if(next != nullptr){
-            head.store(next, memory_order_accquire);
+            head.store(next, std::memory_order_accquire);
             head_copy-> value = next_value->value;
             return head_copy;
 
         }
-        return null_ptr;
+        return nullptr;
 
     }
 
