@@ -27,7 +27,6 @@ namespace OrderBook {
     using OrderId = Aliases::OrderId;
     using Side = Aliases::Side;
     using OrderType = Aliases::OrderType;
-    using TradeInfo = Aliases::TradeInfo;
     
     struct LevelInfo
     {
@@ -110,8 +109,8 @@ namespace OrderBook {
         
         //converting given order into a new order
 
-        OrderPointer ToOrderPointer(OrderType orderType) const {
-            return std::make_shared<Order>(orderType, GetOrderId(), GetSide(), GetPrice(), GetQuantity());
+        OrderPointer ToOrderPointer(Order order) const {
+            return std::make_shared<Order>(order, GetOrderId(), GetSide(), GetPrice(), GetQuantity());
         }
 
 
@@ -122,23 +121,6 @@ namespace OrderBook {
         Quantity m_quantity;
     };
 
-    class Trade
-    {
-    public:
-        Trade(const TradeInfo& bidTrade, const TradeInfo& askTrade)
-        : m_BidTrade{bidTrade}
-        , m_AskTrade {askTrade}
-        {}
-
-        const TradeInfo& GetBidTrade() const {return m_BidTrade;}
-        const TradeInfo& GetAskTrade() const {return m_AskTrade;}
-
-
-    private:
-        TradeInfo m_BidTrade;
-        TradeInfo m_AskTrade;
-
-    };
 
     using Trades = std::vector<Trade>;
 

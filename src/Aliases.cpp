@@ -19,7 +19,8 @@ namespace Aliases {
     };
     enum class OrderType
     {
-        FillorKill
+        FillorKill,
+        GoodTillCancel
     };
 
     struct Order {
@@ -28,7 +29,35 @@ namespace Aliases {
         Side OrderSide;
         OrderType Type;
         Price OrderPrice;
-        Quantity OrderQuantity;
+    public:
+        Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity)
+        : m_OrderType {orderType}
+        , m_OrderId {orderId}
+        , m_side {side}
+        , m_price {price}
+        , m_InitialQuantity {quantity}
+        , m_RemainingQuantity {quantity}
+
+        {}
+
+        OrderId GetOrderId() const {return m_OrderId;}
+        Side GetSide() const {return m_side;}
+        Price GetPrice() const {return m_price;}
+        OrderType GetOrderType() const {return m_OrderType;}
+        Quantity GetInitialQuantity() const {return m_InitialQuantity;}
+        Quantity GetRemainingQuantity() const {return m_RemainingQuantity;}
+        Quantity GetFilledQuantity() const {return GetInitialQuantity() - GetRemainingQuantity() ;}
+        bool IsFilled() const {return GetFilledQuantity == 0;}
+
+
+
+    private:
+        OrderType m_OrderType;
+        OrderId m_OrderId;
+        Side m_side;
+        Price m_price;
+        Quantity m_InitialQuantity;
+        Quantity m_RemainingQuantity;
         OrderId PlacedTsc;
 
     };

@@ -50,31 +50,29 @@ public:
 
             // Run through Tickers OrderBook and see if it can find a match
 
-            if(order.OrderSide == Side::Buy)
+            if(order.OrderSide == Side::Buy) // trying to buy, go to asks map
             {
-                if(m_OrderBookPtr->MEM_ASKS.empty()) {return false;}
-                const auto& [bestAsk,_] = *m_OrderBookPtr->MEM_ASKS.begin();
-                return order.OrderPrice >= bestAsk;
+                if(m_OrderBookPtr->MEM_ASKS.empty()) {return false;} // checks to see if asks map is empty or not
+                const auto& [bestAsk,_] = *(m_OrderBookPtr->MEM_ASKS.begin()); // get iterator of the best Ask
+                return order.OrderPrice >= bestAsk; // if the price at which the order is trying to buy at is larger or equal to bestAsk, return true
             }
-            else{
-                if(m_OrderBookPtr->MEM_BIDS.empty()) {return false;}
-            } 
-            const auto& [bestBid, _] = *(m_OrderBookPtr->MEM_BIDS.begin());
-            return order.OrderPrice <= bestBid;
-        }
+            else(order.OrderSide == Side::Sell){
+                if(m_OrderBookPtr->MEM_BIDS.empty()) {return false;} // see if anyone/bids to sell to
+            
+                const auto& [bestBid, _] = *(m_OrderBookPtr->MEM_BIDS.begin()); // get highed bid 
+                return order.OrderPrice <= bestBid; // check to see sell order price is lower or equal to bestBid
+                
+            }
+        }   
         // I acutally dont know if this return type is right, will do 
-        Trade MatchOrder(const Order& order){
-            //Match Success, Build and fullfill order
-            if(CanMatch(order)){
+        Trade MatchOrder(Order order){
+
+            if(CanMatch(order)){ // order good, run order fullfillment and orderbook modification
 
                 while (true){
 
-                    if(MEM_BIDS.empty() || MEM_ASKS.empty())
-                    {
-                        break;
-                    }
-                    auto& [bidPrice, bids] = *MEM_BIDS.begin();
-                    auto& [askPrice, asks] = *MEM_ASKS.begin();
+                    auto& [bidPrice, bids] = *(m_OrderBookPtr->MEM_BIDS.begin());
+                    auto& [askPrice, asks] = *(m_OrderBookPtr->MEM_ASKS.begin());
                     
                     if(bidPrice < askPrice)
                     {
@@ -171,15 +169,7 @@ public:
             return m_Volume;
         }
 
-
-        
-        
-        
-        void TickerUpdate(const Price& priceChange,
-                            const Quantity& quantityChange,
-                            const Quantity& volumeChange) 
-        {
-
+        void TickerUpdate(const Price& priceChange, const Quantity& quantityChange, const Quantity& volumeChange) {
             m_Price +=  priceChange;
             m_Quantity += quantityChange;
             m_Volume += volumeChange;
