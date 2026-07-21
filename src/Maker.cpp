@@ -15,11 +15,11 @@ using Order = Aliases::Order;
 using Trade = Aliases::Trade;
 
 
-
+ 
 
 class Maker {
 public:
-    Maker(const Symbol& name) : m_Name{name}, m_InitCapital{1000000}
+    Maker(const Symbol& name, const ) : m_Name{name}, m_InitCapital{1000000}
     {
 
     }
@@ -35,9 +35,11 @@ public:
     {
         
     }
+
 private:
+
     Symbol m_Name;
-    std::vector<Order>* m_OrderLog = new std::vector<Order>{};
+    std::shared_ptr<std::vector<Order>> m_OrderLog = std::make_shared<std::vector<Order>>(new std::vector<Order>{});
     Price m_InitCapital;
     Price m_RemainingCapital;
 

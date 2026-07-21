@@ -21,39 +21,33 @@ using Order = Aliases::Order;
 class Ticker {
 public:
 
-    Ticker(const Symbol& Name) : m_Name{Name}
-    {
+    Ticker(const Symbol& Name) : m_Name{Name}{
 
 
     }
 
-
-
-
-    void PerformPerCLK()
-    {
+    void PerformPerCLK(){
         // Matching Engine Takes from MQSC
         // Matching Engine Runs
         // Returns from MatchingEngine 
         m_DataPtr->TickerUpdate();// Update TickerData
         // Log Ticker changes
-        
-        
-    }
+    } 
 
 
 
 
-    class MatchingEngine
-    {
+    class MatchingEngine{
     public:
         MatchingEngine()
         {
 
         }
 
-        bool CanMatch(const Order& order)
-        {
+        
+
+        bool CanMatch(const Order& order){
+
             // Run through Tickers OrderBook and see if it can find a match
 
             if(order.OrderSide == Side::Buy)
@@ -65,17 +59,13 @@ public:
             else{
                 if(m_OrderBookPtr->MEM_BIDS.empty()) {return false;}
             } 
-            const auto& [bestBid, _] = *m_OrderBookPtr->MEM_BIDS.begin();
+            const auto& [bestBid, _] = *(m_OrderBookPtr->MEM_BIDS.begin());
             return order.OrderPrice <= bestBid;
         }
         // I acutally dont know if this return type is right, will do 
-        std::expected<Trade, nullptr> MatchOrder(const Order& order)
-        {
+        Trade MatchOrder(const Order& order){
             //Match Success, Build and fullfill order
             if(CanMatch(order)){
-
-                using MEM_BIDS = m_OrderBookPtr->MEM_BIDS;
-                using MEM_ASKS = m_OrderBookPtr->MEM_ASKS;
 
                 while (true){
 
@@ -150,16 +140,9 @@ public:
                 // Destroy order accordingly. Return unexpected
             }
         }
-
-
-        void MatchingEngineCLKPerform()
-        {
-
-        }
-
-    private:
-
+    }
     };
+    
     class TickerData {
     public:
         TickerData() :  m_Quantity{100000}
@@ -168,7 +151,7 @@ public:
             std::mt19937 gen(rd());
             std::uniform_real_distribution<> dis(1.00, 200.0);
             m_Price{dis(gen)};
-
+            
         }
 
         
@@ -187,33 +170,26 @@ public:
         {
             return m_Volume;
         }
-        float GetVolatility() const
-        {
-            return m_Volatility;
-        }
+
 
         
         
         
         void TickerUpdate(const Price& priceChange,
                             const Quantity& quantityChange,
-                            const Quantity& volumeChange,
-                            const float& volatilityChange) 
+                            const Quantity& volumeChange) 
         {
 
             m_Price +=  priceChange;
             m_Quantity += quantityChange;
             m_Volume += volumeChange;
-            m_Volatility += volatilityChange;
         }
 
 
     private:
-`
         Price m_Price;
         Quantity m_Quantity;
         Quantity m_Volume;
-        float m_Volatility;
     };
 
  
@@ -223,7 +199,7 @@ private:
 
     Symbol m_Name;
     std::unique_ptr<TickerData> m_DataPtr = std::make_unique<TickerData>(new TickerData{});
-    std::unique_ptr<OrderBook::OrderBook> m_OrderBookPtr = std::make_unique<OrderBook::OrderBook>(new OrderBook{});
+    std::unique_ptr<OrderBook::OrderBook> m_OrderBookPtr = std::make_unique<OrderBook::OrderBook>(new OrderBook::OrderBook{});
 
 
 

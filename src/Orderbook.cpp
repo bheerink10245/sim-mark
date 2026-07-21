@@ -76,14 +76,6 @@ namespace OrderBook {
         Quantity GetFilledQuantity() const {return GetInitialQuantity() - GetRemainingQuantity() ;}
         bool IsFilled() const {return GetFilledQuantity == 0;}
 
-        void Fill(Quantity quantity)
-        {
-            if (quantity > GetRemainingQuantity())
-                throw std::logic_error(std::format("Order ({}) cannot be filled for more that  its remaing quantity", GetOrderId()));
-            
-            m_RemainingQuantity -= quantity;
-            
-        }
 
 
     private:
