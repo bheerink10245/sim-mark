@@ -7,13 +7,15 @@
 #include <expected>
 #include "OrderBook.cpp"
 #include "Aliases.cpp"
-#
+#include "MPSC.cpp"
 
 using Price = Aliases::Price;
 using Quantity = Aliases::Quantity;
 using Symbol = Aliases::Symbol;
 using Side = Aliases::Side;
 using Order = Aliases::Order;
+using Trade = Aliases::Trade;
+
 
 
 
@@ -26,12 +28,15 @@ public:
 
     }
 
+    ~Ticker() {
+        delete m_MatchingEnginePtr;
+    }
     void PerformPerCLK(){
-        // Matching Engine Takes from MQSC
-        // Matching Engine Runs
-        // Returns from MatchingEngine 
-        m_DataPtr->TickerUpdate();// Update TickerData
-        // Log Ticker changes
+        m_MatchingEnginePtr->MatchOrder(m_TickerQueuePtr.pop());                         // Matching Engine Takes from MQSC
+                                                                                        // Matching Engine Runs
+                                                                                          // Returns from MatchingEngine 
+        m_DataPtr->TickerUpdate();                                                        // Update TickerData
+                                                                                         // Log Ticker changes
     } 
 
 
@@ -40,9 +45,7 @@ public:
     class MatchingEngine{
     public:
         MatchingEngine()
-        {
-
-        }
+        {}
 
         
 
@@ -64,7 +67,7 @@ public:
                 
             }
         }   
-        // I acutally dont know if this return type is right, will do 
+
         Trade MatchOrder(Order order){
 
             if(CanMatch(order)){ // order good, run order fullfillment and orderbook modification
@@ -182,7 +185,7 @@ public:
         Quantity m_Volume;
     };
 
- 
+    
 
 
 private:
@@ -190,7 +193,8 @@ private:
     Symbol m_Name;
     std::unique_ptr<TickerData> m_DataPtr = std::make_unique<TickerData>(new TickerData{});
     std::unique_ptr<OrderBook::OrderBook> m_OrderBookPtr = std::make_unique<OrderBook::OrderBook>(new OrderBook::OrderBook{});
-
-
+    std::shared_ptr<MPSC> m_TickerQueuePtr = std::make_shared<MPSC>(new MPSC{});
+    MatchingEngine* m_MatchingEnginePtr = new MatchingEngine{};
+    
 
 };
