@@ -53,17 +53,17 @@ public:
 
             // Run through Tickers OrderBook and see if it can find a match
 
-            if(order.OrderSide == Side::Buy) // trying to buy, go to asks map
+            if(order.GetOrderSide() == Side::Buy) // trying to buy, go to asks map
             {
                 if(m_OrderBookPtr->MEM_ASKS.empty()) {return false;} // checks to see if asks map is empty or not
                 const auto& [bestAsk,_] = *(m_OrderBookPtr->MEM_ASKS.begin()); // get iterator of the best Ask
-                return order.OrderPrice >= bestAsk; // if the price at which the order is trying to buy at is larger or equal to bestAsk, return true
+                return order.GetOrderPrice() >= bestAsk; // if the price at which the order is trying to buy at is larger or equal to bestAsk, return true
             }
-            else(order.OrderSide == Side::Sell){
+            else(order.GetOrderSide() == Side::Sell){
                 if(m_OrderBookPtr->MEM_BIDS.empty()) {return false;} // see if anyone/bids to sell to
             
                 const auto& [bestBid, _] = *(m_OrderBookPtr->MEM_BIDS.begin()); // get highed bid 
-                return order.OrderPrice <= bestBid; // check to see sell order price is lower or equal to bestBid
+                return order.GetOrderPrice() <= bestBid; // check to see sell order price is lower or equal to bestBid
                 
             }
         }   
@@ -74,8 +74,8 @@ public:
 
                 while (true){
 
-                    auto& [bidPrice, bids] = *(m_OrderBookPtr->MEM_BIDS.begin());
-                    auto& [askPrice, asks] = *(m_OrderBookPtr->MEM_ASKS.begin());
+                    auto& [bidPrice, bids] = *(m_OrderBookPtr->m_BidsMap.begin());
+                    auto& [askPrice, asks] = *(m_OrderBookPtr->m_AsksMap.begin());
                     
                     if(bidPrice < askPrice)
                     {

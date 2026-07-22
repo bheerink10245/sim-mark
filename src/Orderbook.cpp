@@ -19,25 +19,15 @@
 
 namespace OrderBook { 
 
-
-
-    using LevelInfos = std::vector<LevelInfo>;
-
-    class OrderBookLevelInfos{
-    public:
-        OrderBookLevelInfos(const LevelInfos& bids, const LevelInfos& asks)
-            : MEM_BIDS{bids}
-            , MEM_ASKS {asks}
-        {}
-
-        const LevelInfos& GetBids() const {return MEM_BIDS;}
-        const LevelInfos& GetAsks() const {return MEM_ASKS;}
-    private:
-        LevelInfos MEM_BIDS;
-        LevelInfos MEM_ASKS;
-
-
-    };  
+    using Price = Aliases::Price;
+    using Side = Aliases::Side;
+    using OrderId = Aliases::OrderId;
+    using OrderType = Aliases::OrderType;
+    using Order = Aliases::Order;
+    using OrderPointer = Aliases::OrderPointer;
+    using OrderPointers = Aliases::OrderPointers;
+    using OrderModify = Aliases::OrderModify;
+    using Trade = Aliases::Trade;
 
 
     using Trades = std::vector<Trade>;
@@ -51,68 +41,69 @@ namespace OrderBook {
 
         };
 
-        std::map<Price,OrderPointers, std::greater<Price>> MEM_BIDS;
-        std::map<Price,OrderPointers, std::less<Price>> MEM_ASKS;
-        std::unordered_map<OrderId,OrderEntry> ORDERS;
+        std::map<Price,OrderPointers, std::greater<Price>> m_BidsMap;
+        std::map<Price,OrderPointers, std::less<Price>> m_AsksMap;
+        std::unordered_map<OrderId,OrderEntry> m_OrdersMap;
 
 
         Trades AddOrder(OrderPointer order){
-            if(ORDERS.contains(order->GetOrderId())){
+            if(m_OrdersMap.contains(order->GetOrderId())){
                 return {};
             }
-            if(orders->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetSide(), order->GetPrice()))
+            if(order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetOrderSide(), order->GetOrderPrice()))
                 return{};
             OrderPointers::iterator iterator;
 
-            if (order->GetSide() == Side::Buy){
-                auto& orders = MEM_ASKS[order->GetPrice()];
+            if (order->GetOrderSide() == Side::Buy){
+                auto& orders = m_AsksMap[order->GetOrderPrice()];
                 orders.push_back(order);
                 iterator = std::next(order.begin(),orders.size() - 1);
             
                 
             }
 
-            ORDERS.insert({order->GetOrderId(), OrderEntry(){order_, iterator}});
+            m_OrdersMap.insert({order->GetOrderId(), OrderEntry(){order_, iterator}});
             return MatchOrder();
 
         }
+        
         void CancelOrder(OrderId orderId) {
-            if(!ORDERS.contains(orderId))
+            if(!m_OrdersMap.contains(orderId))
                 return;
-            const auto& [order, orderItertor] = ORDERS.at(orderId);
-            ORDERS.erase(orderId);
+            const auto& [order, orderIterator] = m_OrdersMap.at(orderId);
+            m_OrdersMap.erase(orderId);
 
-            if(orders->GetSide() == Side::Sell){
-                auto price = order->GetPrice();
-                auto price = order->GetPrice();
-                auto& orders = MEM_ASKS.at(price);
+            if(orders->GetOrderSide() == Side::Sell){
+                auto price = order->GetOrderPrice();
+                auto price = order->GetOrderPrice();
+                auto& orders = m_AsksMap.at(price);
                 orders.erase(orderIterator);
                 if ( orders.empty())
-                    MEM_ASKS.erase(price);
+                    m_AsksMap.erase(price);
             }
             else
             {
-                auto price = order->GetPrice();
-                auto& orders = MEM_BIDS.at(price);
+                auto price = order->GetOrderPrice();
+                auto& orders = m_BidsMap.at(price);
                 orders.erase(iterator);
                 if(orders.empty())
-                    MEM_BIDS.erase(price);
+                    m_BidsMap.erase(price);
             }
         }
 
         Trades MatchOrder(OrderModify order){
         
-            if(!ORDERS.contains(order.GetOrderId()))
+            if(!m_OrdersMap.contains(order.GetOrderId())){
                 return  {};
             }
-            const auto& [existisingOrder , _] = ORDERS.at(order.GetOrderId());
+            const auto& [existisingOrder , _] = m_OrdersMap.at(order.GetOrderId());
             CancelOrder(order.GetOrderId());
             return AddOrder(order.ToOrderPointer(existingOrder->GetOrderType()));
 
 
         }
 
-        size_t Size() const {return ORDERS.size();}
+        size_t Size() const {return m_OrdersMap.size();}
 
         OrderBookLevelInfos GetOrderInfos() const
         {
@@ -125,9 +116,9 @@ namespace OrderBook {
                     {return runningSum + order->GetRemainingQuantity(); } };
 
             };
-            for(const auto& [price,orders] : MEM_BIDS)
+            for(const auto& [price,orders] : m_BidsMap)
                 bidInfos.push_back(CreateLevelInfos(price orders));
-            for(const auto& [price, odrders] : MEM_ASKS)
+            for(const auto& [price, odrders] : m_AsksMap)
                 asksInfos.push_back(CreateLevelInfos(price,orders));
             return OrderBookLevelInfos{bidInfos, asksInfos};
         }
@@ -141,12 +132,12 @@ namespace OrderBook {
 }
 int main()
 {
-    Orderbook::OrderBook orderbook;
-    const OrderId = 1;
-    orderbook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel,orderId, Side::Buy, 100, 10));
-    std::cout<< orderbook.Size() << std::endl; // 1
-    orderBook.CancelOrder(orderId);
-    std::cout << orderbook.Size() << std::endl; // 0
+    OrderBook::OrderBook OrderBook;
+    const int OrderId = 1;
+    OrderBook.AddOrder(std::make_shared<Order>(OrderType::GoodTillCancel,orderId, Side::Buy, 100, 10));
+    std::cout<< OrderBook.Size() << std::endl; // 1
+    OrderBook.CancelOrder(orderId);
+    std::cout << OrderBook.Size() << std::endl; // 0
     return 0;
 }
 

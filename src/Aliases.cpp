@@ -1,6 +1,5 @@
 #pragma once 
 
-
 #include <string>
 #include <list>
 #include <memory>
@@ -21,13 +20,13 @@ namespace Aliases {
 
     enum class OrderType
     {
-        FillorKill,
+        FillAndKill,
         GoodTillCancel
     };
 
-    struct Order {
-
-        OrderId orderID;
+    class Order {
+    private:
+        OrderId orderId;
         OrderType orderType;
         Side orderSide;
         Price orderPrice;
@@ -35,10 +34,10 @@ namespace Aliases {
         Quantity remainingQuantity;
         uint64_t placedTimestamp;
 
-
-        Order(OrderId orderID, OrderType orderType,Side side, Price pice, Quantity quantity, uint64_t timestamp)
+    public:
+        Order(OrderId orderId, OrderType orderType,Side side, Price pice, Quantity quantity, uint64_t timestamp)
             : orderType {orderType}
-            , orderID {orderID}
+            , orderId {orderId}
             , orderSide {side}
             , orderPrice {price}
             , initialQuantity {quantity}
@@ -46,49 +45,67 @@ namespace Aliases {
             , placedTimestamp {timestamp}
         {}
 
-        
-        Quantity GetFilledQuantity() const {return InitialQuantity - RemainingQuantity() ;}
+        OrderId GetOrderId() const {return orderId;}
+        OrderType GetOrderType() const {return orderType;}
+        Side GetOrderSide() const {return orderSide;}
+        Price GetOrderPrice() const {return orderPrice;}         
+        Quantity GetInitialQuantity() const {return initialQuantity;}
+        Quantity GetRemainingQuantity() const {return remainingQuantity;}
+        uint64_t GetPlaceTimeStamp() const {return placedTimestamp;}
+        Quantity GetFilledQuantity() const {return GetInitialQuantity() - GetRemainingQuantity();}
         bool IsFilled() const {return GetFilledQuantity == 0;}
+
     };
 
     using OrderPointer = std::shared_ptr<Order>;
     using OrderPointers = std::list<OrderPointer>;
     
-    struct OrderModify {
-
-        OrderId orderID;
+    class OrderModify {
+    private:
+        OrderId orderId;
         Side orderSide;
         Price orderPrice;
         Quantity orderQuantity;
 
-
+    public:
         OrderModify(OrderId orderId, Side side, Price price, Quantity quantity)
-            :    orderID{orderId}
+            :    orderId{orderId}
             ,    orderSide{side}
             ,    orderPrice{price}
             ,    orderQuantity{quantity}
         {}
 
         OrderPointer ToOrderPointer(Order order) {
-            return std::make_shared<Order>(order, orderID, orderSide, orderPrice, orderQuantity);
+            return std::make_shared<Order>(order, orderId, orderSide, orderPrice, orderQuantity);
         }
+
+        OrderId GetOrderId() const {return orderId;}
+        Side GetOrderSide() const {return orderSide;}
+        Price GetOrderPrice() const {return orderPrice;}
+        Quantity GetOrderQuantity() const {return orderQuantity;}
+
         
     };
 
-    struct Trade {
-
-        OrderId tradeID;
+    class Trade {
+    private:
+        OrderId tradeId;
         Price executedPrice;
         Quantity filledQuantity;
         uint64_t filledTimestamp;
-
-        Trade(OrderId tradeID, Price executedprice, Quantity filledquantity, uint64_t filledtimestamp)
-            : tradeId{ tradeId }
+    public:
+        Trade(OrderId tradeId, Price executedprice, Quantity filledquantity, uint64_t filledtimestamp)
+            : tradeId { tradeId }
             , executedPrice{ executedPrice }
             , filledQuantity{ filledquantity }
             , filledTimestamp{ filledtimestamp }
-        {
-        }
+        {}
+        
+        OrderId GetOrderId() const {return tradeId;}
+        Price GetExecutedPrice() const {return executedPrice;}
+        Quantity GetFilledQuantity() const {return filledQuantity;}
+        uint64_t GetFilledTimeStamp() const {return filledTimestamp;}
+
 
     };
 
