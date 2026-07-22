@@ -21,20 +21,6 @@ namespace OrderBook {
 
 
 
-
-    using Price = Aliases::Price;
-    using Quantity = Aliases::Quantity ;
-    using OrderId = Aliases::OrderId;
-    using Side = Aliases::Side;
-    using OrderType = Aliases::OrderType;
-    
-    struct LevelInfo
-    {
-        Price m_price;
-        Quantity m_quantity;
-
-    };
-
     using LevelInfos = std::vector<LevelInfo>;
 
     class OrderBookLevelInfos{
@@ -53,80 +39,11 @@ namespace OrderBook {
 
     };  
 
-    class Order
-    {
-    public:
-        Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity)
-        : m_OrderType {orderType}
-        , m_OrderId {orderId}
-        , m_side {side}
-        , m_price {price}
-        , m_InitialQuantity {quantity}
-        , m_RemainingQuantity {quantity}
-
-        {}
-
-        OrderId GetOrderId() const {return m_OrderId;}
-        Side GetSide() const {return m_side;}
-        Price GetPrice() const {return m_price;}
-        OrderType GetOrderType() const {return m_OrderType;}
-        Quantity GetInitialQuantity() const {return m_InitialQuantity;}
-        Quantity GetRemainingQuantity() const {return m_RemainingQuantity;}
-        Quantity GetFilledQuantity() const {return GetInitialQuantity() - GetRemainingQuantity() ;}
-        bool IsFilled() const {return GetFilledQuantity == 0;}
-
-
-
-    private:
-        OrderType m_OrderType;
-        OrderId m_OrderId;
-        Side m_side;
-        Price m_price;
-        Quantity m_InitialQuantity;
-        Quantity m_RemainingQuantity;
-
-        
-    };
-
-    using OrderPointer = std::shared_ptr<Order>;
-    using OrderPointers = std::list<OrderPointer>;
-
-    class OrderModify
-    {
-    public:
-        OrderModify(OrderId orderId, Side side, Price price, Quantity quantity)
-        : m_OrderId{orderId}
-        , m_price {price}
-        , m_side {side}
-        , m_quantity {quantity}
-
-        {}
-        OrderId GetOrderId() const {return m_OrderId;}
-        Price GetPrice() const {return m_price;}
-        Side GetSide() const {return m_side;}
-        Quantity GetQuantity() const {m_quantity;}
-        
-        
-        //converting given order into a new order
-
-        OrderPointer ToOrderPointer(Order order) const {
-            return std::make_shared<Order>(order, GetOrderId(), GetSide(), GetPrice(), GetQuantity());
-        }
-
-
-    private:
-        OrderId m_OrderId;
-        Price m_price;
-        Side m_side;
-        Quantity m_quantity;
-    };
-
 
     using Trades = std::vector<Trade>;
 
     struct OrderBook
     {
-    public:
         struct OrderEntry
         {
             OrderPointer order_(nullptr);
@@ -139,81 +56,6 @@ namespace OrderBook {
         std::unordered_map<OrderId,OrderEntry> ORDERS;
 
 
-        Trades MatchOrders()
-        {
-            Trades trades;
-            Trades.reserve(ORDERS.size());
-
-            while (true)
-            {
-                if(MEM_BIDS.empty() || MEM_ASKS.empty())
-                {
-                    break;
-                }
-                auto& [bidPrice, bids] = *MEM_BIDS.begin();
-                auto& [askPrice, asks] = *MEM_ASKS.begin();
-                
-                if(bidPrice < askPrice)
-                {
-                    break;
-                }
-
-                while (bids.size() && asks.size())
-                {
-                    auto& bid = bids.front();
-                    auto& ask = asks.front();
-
-                    Quantity quantity = std::min(bid->GetRemainingQuantity, ask->GetRemainingQuantity());
-                    
-                    bid->Fill(quantity);
-                    ask->Fill(quantity);
-
-                    if(bid->IsFilled())
-                    {
-                        bids.pop_front();
-                        ORDERS.erase(bid->GetOrderId());
-
-                    }
-                    if(ask->IsFilled())
-                    {
-                        asks.pop_front();
-                        ORDERS.erase(ask->GetOrderId);
-                    }
-                    if(bids.empty())
-                    {
-                        MEM_BIDS.erase(bidPrice);
-
-                    }
-                    if (bids.empty())
-                    {
-                        MEM_ASKS.erase(askPrice);
-                    }
-
-                    trades.push_back(Trade{
-                        TradeInfo{bid->GetOrderId(), bid->GetPrice(), quantity},
-                        TradeInfo{ask->GetOrderId(), ask->GetPrice(), quantity}
-                    });
-                }
-            
-            if(!MEM_BIDS.empty()){
-                auto& [_,bids] = *MEM_BIDS.begin();
-                auto& order = bids.front();
-                if(order->GetOrderType() == OrderType::FillAndKill){
-                    CancelOrder(order->GetOrderId());
-                
-                }
-                if(!.empty()){
-                    auto& [_,asks] = *asks.begin();
-                    auto& order = asks,front();
-                    if(order->GetOrderType() == OrderType::FillAndKill)
-                        CancelOrder(order->GetOrderId());
-                    
-                }
-            }
-            return trades;
-        }
-
-    public: 
         Trades AddOrder(OrderPointer order){
             if(ORDERS.contains(order->GetOrderId())){
                 return {};
