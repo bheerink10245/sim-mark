@@ -24,20 +24,19 @@ public:
 
     }
 
-    ~MPSC()
-    {
+    ~MPSC(){
         
     }
-    void push(OrderNode* OrderNode)
-    {
+    void push(OrderNode* OrderNode){
+
         OrderNode->next.store(nullptr, std::memory_order_relaxed);
         OrderNode* prev = tail.exchange(OrderNode, std::memory_order_acq_rel);
         prev->next.store(OrderNode, std::memory_order_release);
 
     }
 
-    OrderNode* pop()
-    {
+    OrderNode* pop(){
+
         OrderNode* head_copy = head.load(std::memory_order_relaxed);
         OrderNode* next = head_copy->next.load(std::memory_order_accquire);
 
