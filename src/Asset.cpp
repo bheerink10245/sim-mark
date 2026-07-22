@@ -32,11 +32,11 @@ public:
         delete m_MatchingEnginePtr;
     }
     void PerformPerCLK(){
-        m_MatchingEnginePtr->MatchOrder(m_TickerQueuePtr.pop());                         // Matching Engine Takes from MQSC
+        m_MatchingEnginePtr->MatchOrder(m_TickerQueuePtr.pop());                        // Matching Engine Takes from MQSC
                                                                                         // Matching Engine Runs
-                                                                                          // Returns from MatchingEngine 
-        m_DataPtr->TickerUpdate();                                                        // Update TickerData
-                                                                                         // Log Ticker changes
+                                                                                        // Returns from MatchingEngine 
+        m_DataPtr->TickerUpdate();                                                      // Update TickerData
+                                                                                        // Log Ticker changes
     } 
 
 
@@ -47,7 +47,10 @@ public:
         MatchingEngine()
         {}
 
-        
+        using m_AsksMap = m_OrderBookPtr->m_AsksMap;
+        using m_BidsMap = m_OrderBookPtr->m_BidsMap;
+        using m_OrdersMap = m_OrderBookPtr->m_OrdersMap;
+
 
         bool CanMatch(const Order& order){
 
@@ -55,14 +58,14 @@ public:
 
             if(order.GetOrderSide() == Side::Buy) // trying to buy, go to asks map
             {
-                if(m_OrderBookPtr->MEM_ASKS.empty()) {return false;} // checks to see if asks map is empty or not
-                const auto& [bestAsk,_] = *(m_OrderBookPtr->MEM_ASKS.begin()); // get iterator of the best Ask
+                if(m_AsksMap.empty()) {return false;} // checks to see if asks map is empty or not
+                const auto& [bestAsk,_] = *(m_AsksMap.begin()); // get iterator of the best Ask
                 return order.GetOrderPrice() >= bestAsk; // if the price at which the order is trying to buy at is larger or equal to bestAsk, return true
             }
             else(order.GetOrderSide() == Side::Sell){
-                if(m_OrderBookPtr->MEM_BIDS.empty()) {return false;} // see if anyone/bids to sell to
+                if(m_BidsMap.empty()) {return false;} // see if anyone/bids to sell to
             
-                const auto& [bestBid, _] = *(m_OrderBookPtr->MEM_BIDS.begin()); // get highed bid 
+                const auto& [bestBid, _] = *(m_BidsMap.begin()); // get highed bid 
                 return order.GetOrderPrice() <= bestBid; // check to see sell order price is lower or equal to bestBid
                 
             }
@@ -74,8 +77,8 @@ public:
 
                 while (true){
 
-                    auto& [bidPrice, bids] = *(m_OrderBookPtr->m_BidsMap.begin());
-                    auto& [askPrice, asks] = *(m_OrderBookPtr->m_AsksMap.begin());
+                    auto& [bidPrice, bids] = *(m_BidsMap.begin());
+                    auto& [askPrice, asks] = *(m_AsksMap.begin());
                     
                     if(bidPrice < askPrice)
                     {
@@ -87,7 +90,7 @@ public:
                         auto& bid = bids.front();
                         auto& ask = asks.front();
 
-                        Quantity quantity = std::min(bid->GetRemainingQuantity, ask->GetRemainingQuantity());
+                        Quantity quantity = std::min(bid->GetRemainingQuantity(), ask->GetRemainingQuantity());
                         
                         bid->Fill(quantity);
                         ask->Fill(quantity);
@@ -95,22 +98,22 @@ public:
                         if(bid->IsFilled())
                         {
                             bids.pop_front();
-                            ORDERS.erase(bid->GetOrderId());
+                            m_OrdersMap.erase(bid->GetOrderId());
 
                         }
                         if(ask->IsFilled())
                         {
                             asks.pop_front();
-                            ORDERS.erase(ask->GetOrderId);
+                            m_OrdersMap.erase(ask->GetOrderId);
                         }
                         if(bids.empty())
                         {
-                            MEM_BIDS.erase(bidPrice);
+                            m_BidsMap.erase(bidPrice);
 
                         }
                         if (bids.empty())
                         {
-                            MEM_ASKS.erase(askPrice);
+                            m_AsksMap.erase(askPrice);
                         }
 
                         trades.push_back(Trade{
@@ -119,28 +122,24 @@ public:
                         });
                     }
                 
-                if(!MEM_BIDS.empty()){
-                    auto& [_,bids] = *MEM_BIDS.begin();
+                if(!m_BidsMap.empty()){
+                    auto& [_,bids] = *m_BidsMap.begin();
                     auto& order = bids.front();
                     if(order->GetOrderType() == OrderType::FillAndKill){
                         CancelOrder(order->GetOrderId());
                     
-                    }
-                    if(!.empty()){
-                        auto& [_,asks] = *asks.begin();
-                        auto& order = asks,front();
-                        if(order->GetOrderType() == OrderType::FillAndKill)
-                            CancelOrder(order->GetOrderId());
-                        
-                    }
                 }
+                if(!m_AsksMap.empty()){
+                    auto& [_,asks] = *asks.begin();
+                    auto& order = asks,front();
+                    if(order->GetOrderType() == OrderType::FillAndKill)
+                        CancelOrder(order->GetOrderId());
+                    
+                }
+            }
                 return trades;
-            }
-            // Order cant be fullfilled 
-            else{
-                // Destroy order accordingly. Return unexpected
-            }
         }
+            // Order cant be fullfilled 
     }
     };
     
@@ -185,14 +184,12 @@ public:
         Quantity m_Volume;
     };
 
-    
-
 
 private:
 
     Symbol m_Name;
     std::unique_ptr<TickerData> m_DataPtr = std::make_unique<TickerData>(new TickerData{});
-    std::unique_ptr<OrderBook::OrderBook> m_OrderBookPtr = std::make_unique<OrderBook::OrderBook>(new OrderBook::OrderBook{});
+    std::unique_ptr<OrderBook::OrderBook> m_OrderBookPtr = std::make_unique<OrderBook::OrderBook>(new OrderBook::OrderBook);
     std::shared_ptr<MPSC> m_TickerQueuePtr = std::make_shared<MPSC>(new MPSC{});
     MatchingEngine* m_MatchingEnginePtr = new MatchingEngine{};
     

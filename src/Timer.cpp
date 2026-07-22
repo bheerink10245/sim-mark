@@ -1,8 +1,4 @@
-
-
 #include <chrono>
-
-
 
 class Timer{
 public:

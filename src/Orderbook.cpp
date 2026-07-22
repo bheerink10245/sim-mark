@@ -96,7 +96,7 @@ namespace OrderBook {
             if(!m_OrdersMap.contains(order.GetOrderId())){
                 return  {};
             }
-            const auto& [existisingOrder , _] = m_OrdersMap.at(order.GetOrderId());
+            const auto& [existingOrder , _] = m_OrdersMap.at(order.GetOrderId());
             CancelOrder(order.GetOrderId());
             return AddOrder(order.ToOrderPointer(existingOrder->GetOrderType()));
 
