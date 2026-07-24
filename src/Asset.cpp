@@ -145,8 +145,7 @@ public:
     
     class TickerData {
     public:
-        TickerData() :  m_Quantity{100000}
-        { 
+        TickerData() :  m_Quantity{100000} { 
             std::random_device rd;
             std::mt19937 gen(rd());
             std::uniform_real_distribution<> dis(1.00, 200.0);
@@ -158,18 +157,9 @@ public:
         
         
         
-        Price GetPrice() const
-        {
-            return m_Price;
-        }
-        Quantity GetQuantity() const
-        {
-            return m_Quantity;
-        }
-        Quantity GetVolume() const 
-        {
-            return m_Volume;
-        }
+        Price GetPrice() const {return m_Price;} 
+        Quantity GetQuantity() const {return m_Quantity;}
+        Quantity GetVolume() const {return m_Volume;}
 
         void TickerUpdate(const Price& priceChange, const Quantity& quantityChange, const Quantity& volumeChange) {
             m_Price +=  priceChange;

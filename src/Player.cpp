@@ -4,8 +4,6 @@
 #include <iostream>
 #include <unordered_map>
 
-
-
 using Price = Aliases::Price;
 using Quantity = Aliases::Quantity;
 using OrderId = Aliases::OrderId;
@@ -14,22 +12,16 @@ using Side = Aliases::Side;
 using Order = Aliases::Order;
 using Trade = Aliases::Trade;
 
-
 class Player {
 public:
-    Player(const Symbol& name) : m_Name{name}, m_InitCapital{100000}
-    {
+    Player(const Symbol& name) : m_Name{name}, m_InitCapital{100000}{
+
 
     }
-
     
-    Price GetPnL()
-    {
-        return m_InitCapital - m_RemainingCapital;
-    }
+    Price GetPnL() {return m_InitCapital - m_RemainingCapital;}
     
-    void PerformPerCLK()
-    {
+    void PerformPerCLK(){
         
     }
 private:
