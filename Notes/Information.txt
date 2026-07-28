@@ -62,18 +62,49 @@ Clock:
 
 
 
-
 ---------------------------------------------------------------
 Types:
-    ORDER
-        Order :: OrderType && Trade
-        Trade :: TimeStamp/s && TradeInfo
-        TimeStamp/s :: Time @ Matching Engine Returns && Time @ Which Order leaves Particpant
-        TradeInfo :: Side && OrderId && Price && Qan Match Retuuantity
+
+    Price , unsigned 32bit int 
+    Quantity , unsigned 32bit int 
+    OrderId , unsigned 64 bit int 
+    Symbol , string 
+
+    Side, enum class
+        -Buy 
+        -Sell
+    
+    OrderType, enum class: 
+        -FillAndKill
+        -GoodTillCancel
+    
+    Order:
+        APIs/Member variables and Constructor list
+        -GetOrderId() 
+        -GetOrderType()
+        -GetOrderSide()
+        -GetOrderPrice()
+        -GetInitialQuantity(), initial quantity order is placed for
+        -GetRemainingQuantity(), remainder of order that couldnt be fullfilled
+        -GetPlacedTimeStamp(), snapshot count of when order happened
+        -GetFilledQuantity(), quantity number of shares order that were fullfilled
+        -IsFilled(), bool that checks if the entire order was filled
+        Constructor List: Order{OrderId,OrdeType,Side,Price,Quantity,TimeStamp}
+        Default Params:
+            OrderId: NO DEFAULT
+            OrderType: FillAndKill
+            Side: NO DEFAULT
+            Price: NO DEFAULT
+            Quantity: NO DEFAULT
+            TimeStamp: Null
+    
+    Trade:
+    
+
 
     SIGNAL
         Contains a bool which provides whether or not the Strategy wants to make a Trade
         Contains the Side
-        Contains Quantity
+        Contains price ceiling/maximum for implict exec
 
 

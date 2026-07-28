@@ -32,10 +32,9 @@ public:
         delete m_MatchingEnginePtr;
     }
     void PerformPerCLK(){
-        m_MatchingEnginePtr->MatchOrder(m_TickerQueuePtr.pop());                        // Matching Engine Takes from MQSC
-                                                                                        // Matching Engine Runs
-                                                                                        // Returns from MatchingEngine 
-        m_DataPtr->TickerUpdate();                                                      // Update TickerData
+        m_MatchingEnginePtr->MatchOrder(m_TickerQueuePtr.pop());                     
+                                                                                        
+        m_DataPtr->TickerUpdate();                                                     // Update TickerData
                                                                                         // Log Ticker changes
     } 
 
@@ -52,95 +51,89 @@ public:
         using m_OrdersMap = m_OrderBookPtr->m_OrdersMap;
 
 
-        bool CanMatch(const Order& order){
-
-            // Run through Tickers OrderBook and see if it can find a match
-
-            if(order.GetOrderSide() == Side::Buy) // trying to buy, go to asks map
+        bool CanMatch(const Order& order) const {
+            if (order.GetOrderSide() == Side::Buy)
             {
-                if(m_AsksMap.empty()) {return false;} // checks to see if asks map is empty or not
-                const auto& [bestAsk,_] = *(m_AsksMap.begin()); // get iterator of the best Ask
-                return order.GetOrderPrice() >= bestAsk; // if the price at which the order is trying to buy at is larger or equal to bestAsk, return true
+                if (m_AsksMap.empty()) return false;
+                const auto& [bestAsk, _] = *m_AsksMap.begin();
+                return order.GetOrderPrice() >= bestAsk;
             }
-            else(order.GetOrderSide() == Side::Sell){
-                if(m_BidsMap.empty()) {return false;} // see if anyone/bids to sell to
-            
-                const auto& [bestBid, _] = *(m_BidsMap.begin()); // get highed bid 
-                return order.GetOrderPrice() <= bestBid; // check to see sell order price is lower or equal to bestBid
-                
+            else // sell side
+            {
+                if (m_BidsMap.empty()) return false;
+                const auto& [bestBid, _] = *m_BidsMap.begin();
+                return order.GetOrderPrice() <= bestBid;
             }
-        }   
-
-        Trade MatchOrder(Order order){
-
-            if(CanMatch(order)){ // order good, run order fullfillment and orderbook modification
-
-                while (true){
-
-                    auto& [bidPrice, bids] = *(m_BidsMap.begin());
-                    auto& [askPrice, asks] = *(m_AsksMap.begin());
-                    
-                    if(bidPrice < askPrice)
-                    {
-                        break;
-                    }
-
-                    while (bids.size() && asks.size())
-                    {
-                        auto& bid = bids.front();
-                        auto& ask = asks.front();
-
-                        Quantity quantity = std::min(bid->GetRemainingQuantity(), ask->GetRemainingQuantity());
-                        
-                        bid->Fill(quantity);
-                        ask->Fill(quantity);
-
-                        if(bid->IsFilled())
-                        {
-                            bids.pop_front();
-                            m_OrdersMap.erase(bid->GetOrderId());
-
-                        }
-                        if(ask->IsFilled())
-                        {
-                            asks.pop_front();
-                            m_OrdersMap.erase(ask->GetOrderId);
-                        }
-                        if(bids.empty())
-                        {
-                            m_BidsMap.erase(bidPrice);
-
-                        }
-                        if (bids.empty())
-                        {
-                            m_AsksMap.erase(askPrice);
-                        }
-
-                        trades.push_back(Trade{
-                            TradeInfo{bid->GetOrderId(), bid->GetPrice(), quantity},
-                            TradeInfo{ask->GetOrderId(), ask->GetPrice(), quantity}
-                        });
-                    }
-                
-                if(!m_BidsMap.empty()){
-                    auto& [_,bids] = *m_BidsMap.begin();
-                    auto& order = bids.front();
-                    if(order->GetOrderType() == OrderType::FillAndKill){
-                        CancelOrder(order->GetOrderId());
-                    
-                }
-                if(!m_AsksMap.empty()){
-                    auto& [_,asks] = *asks.begin();
-                    auto& order = asks,front();
-                    if(order->GetOrderType() == OrderType::FillAndKill)
-                        CancelOrder(order->GetOrderId());
-                    
-                }
-            }
-                return trades;
         }
-            // Order cant be fullfilled 
-    }
+
+        std::vector<Trade> MatchOrder(Order order)
+        {
+            std::vector<Trade> trades;
+
+            if (!CanMatch(order))
+                return trades;
+
+            while (!m_BidsMap.empty() && !m_AsksMap.empty())
+            {
+                auto& [bidPrice, bids] = *m_BidsMap.begin();
+                auto& [askPrice, asks] = *m_AsksMap.begin();
+
+                if (bidPrice < askPrice)
+                    break;
+
+                while (!bids.empty() && !asks.empty())
+                {
+                    auto& bid = bids.front();
+                    auto& ask = asks.front();
+
+                    Quantity quantity = std::min(bid->GetRemainingQuantity(), ask->GetRemainingQuantity());
+
+                    bid->Fill(quantity);
+                    ask->Fill(quantity);
+
+                    trades.emplace_back(
+                        bid->GetOrderId(),
+                        ask->GetOrderId(),
+                        askPrice,        // convention: trade executes at the resting (ask) price
+                        quantity,
+                        Snapshot()
+
+                    if (bid->IsFilled())
+                    {
+                        bids.pop_front();
+                        m_OrdersMap.erase(bid->GetOrderId());
+                    }
+                    if (ask->IsFilled())
+                    {
+                        asks.pop_front();
+                        m_OrdersMap.erase(ask->GetOrderId());
+                    }
+                }
+
+                if (bids.empty())
+                    m_BidsMap.erase(bidPrice);
+                if (asks.empty())
+                    m_AsksMap.erase(askPrice);
+            }
+
+            if (!m_BidsMap.empty())
+            {
+                auto& [_, bids] = *m_BidsMap.begin();
+                auto& topBid = bids.front();
+                if (topBid->GetOrderType() == OrderType::FillAndKill)
+                    CancelOrder(topBid->GetOrderId());
+            }
+
+            if (!m_AsksMap.empty())
+            {
+                auto& [_, asks] = *m_AsksMap.begin();
+                auto& topAsk = asks.front();
+                if (topAsk->GetOrderType() == OrderType::FillAndKill)
+                    CancelOrder(topAsk->GetOrderId());
+            }
+
+            return trades;
+        }
     };
     
     class TickerData {
@@ -161,10 +154,11 @@ public:
         Quantity GetQuantity() const {return m_Quantity;}
         Quantity GetVolume() const {return m_Volume;}
 
-        void TickerUpdate(const Price& priceChange, const Quantity& quantityChange, const Quantity& volumeChange) {
-            m_Price +=  priceChange;
-            m_Quantity += quantityChange;
-            m_Volume += volumeChange;
+        void TickerUpdate(){
+            Price lastAsk {*(m_OrderBookPtr->m_AsksMap.begin()) };
+            Price lastBid {*(m_OrderBookPtr->m_BidsMap.begin()) };
+
+            m_Price = ((lastAsk + lastBid) / 2.00);
         }
 
 

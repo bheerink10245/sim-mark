@@ -1,5 +1,7 @@
 #pragma once 
 
+
+#include <iostream>
 #include <string>
 #include <list>
 #include <memory>
@@ -35,7 +37,7 @@ namespace Aliases {
         uint64_t placedTimestamp;
 
     public:
-        Order(OrderId orderId, OrderType orderType,Side side, Price pice, Quantity quantity, uint64_t timestamp)
+        Order(OrderId orderId, OrderType orderType,Side side, Price price, Quantity quantity, uint64_t timestamp)
             : orderType {orderType}
             , orderId {orderId}
             , orderSide {side}
@@ -96,7 +98,7 @@ namespace Aliases {
     public:
         Trade(OrderId tradeId, Price executedprice, Quantity filledquantity, uint64_t filledtimestamp)
             : tradeId { tradeId }
-            , executedPrice{ executedPrice }
+            , executedPrice{ executedprice }
             , filledQuantity{ filledquantity }
             , filledTimestamp{ filledtimestamp }
         {}
@@ -105,6 +107,29 @@ namespace Aliases {
         Price GetExecutedPrice() const {return executedPrice;}
         Quantity GetFilledQuantity() const {return filledQuantity;}
         uint64_t GetFilledTimeStamp() const {return filledTimestamp;}
+
+        
+
+    };
+
+    class Signal {
+    private:
+        bool m_Valid;
+        Side m_SignalSide;    
+        Price m_SignalPrice;
+
+
+    public:
+
+        Signal(bool validity, Side orderside, Price sigprice)
+        : m_Valid{validity}
+        , m_SignalSide{orderside}
+        , m_SignalPrice{sigprice}
+
+        bool GetSignalValidity() const {return m_Valid;}
+        Side GetSignalSide() const {return m_SignalSide;}
+        Price GetSignaPrice() const {return m_SignalPrice;}
+
 
 
     };

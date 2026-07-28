@@ -50,10 +50,12 @@ namespace OrderBook {
             if(m_OrdersMap.contains(order->GetOrderId())){
                 return {};
             }
-            if(order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetOrderSide(), order->GetOrderPrice()))
+            if(order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order))
                 return{};
             OrderPointers::iterator iterator;
 
+
+            //FIx 
             if (order->GetOrderSide() == Side::Buy){
                 auto& orders = m_AsksMap[order->GetOrderPrice()];
                 orders.push_back(order);
