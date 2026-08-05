@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Aliases.h"
+
+
 #include <map>
 #include <unordered_map>
 #include <thread>
@@ -7,7 +10,7 @@
 #include <mutex>
 #include <atomic>
 
-#include "Aliases.h"
+
 
 
 using Price = Aliases::Price;

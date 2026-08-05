@@ -1,9 +1,9 @@
 // This simulation is run on a i7-14700K(Raptor Lake Refresh), 20 cores, 28 threads. 8 P-Cores, 12 E-Cores
 
 #include "Aliases.h"
-#include "Ticker.cpp"
-#include "Player.cpp"
-#include "Maker.cpp"
+#include "Ticker/Ticker.h"
+#include "Player/Player.h"
+#include "Maker/Maker.h"
 
 
 #include <thread> 

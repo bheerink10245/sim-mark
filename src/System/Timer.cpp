@@ -1,5 +1,5 @@
-#include <chrono>
-#include <ctime>
+#include "Timer.h"
+
 class Timer{
 public:
 

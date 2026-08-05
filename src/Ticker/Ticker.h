@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Aliases.h"
-#include "OrderBook/OrderBook.cpp"
-#include "MPSC.cpp"
+#include "OrderBook/OrderBook.h"
+#include "MPSC.h"
 
 #include <iostream>
 #include <vector>

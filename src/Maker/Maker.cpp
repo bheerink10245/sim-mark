@@ -1,5 +1,5 @@
-#include "Aliases.cpp"
-#include "Asset.cpp"
+#include "Aliases.h"
+
 #include <queue>
 #include <vector>
 #include <iostream>
