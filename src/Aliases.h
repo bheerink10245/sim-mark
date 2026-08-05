@@ -1,6 +1,5 @@
 #pragma once 
 
-
 #include <iostream>
 #include <string>
 #include <list>
@@ -8,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <format>
+#include <stdexcept>
 
 //  using Price = Aliases::Price;
 //  using Quantity = Aliases::Quantity;
@@ -111,14 +111,14 @@ namespace Aliases {
         void Fill(Quantity quantity)
         {
             if (quantity > GetRemainingQuantity())
-                throw std::logic_error(std::format("Order ({}) cannot be filled for more than its remaining quantity.", GetOrderId()));
+                throw std::logic_error("Order ({}) cannot be filled for more than its remaining quantity.", GetOrderId()));
 
             m_RemainingQuantity -= quantity;
         }
         void ToGoodTillCancel(Price price) 
         { 
             if (GetOrderType() != OrderType::Market)
-                throw std::logic_error(std::format("Order ({}) cannot have its price adjusted, only market orders can.", GetOrderId()));
+                throw std::logic_error("Order ({}) cannot have its price adjusted, only market orders can.", GetOrderId());
 
             m_Price = price;
             m_OrderType = OrderType::GoodTillCancel;
@@ -153,7 +153,7 @@ namespace Aliases {
         {}
 
         OrderPointer ToOrderPointer(Order order) {
-            return std::make_shared<Order>(order, orderId, orderSide, orderPrice, orderQuantity);
+            return std::make_shared<Order>(orderId, orderSide,orderQuantity);
         }
 
         OrderId GetOrderId() const {return orderId;}
@@ -163,7 +163,6 @@ namespace Aliases {
 
         
     };
-
     
     struct TradeInfo {
 

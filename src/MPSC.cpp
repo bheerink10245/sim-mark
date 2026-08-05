@@ -1,16 +1,16 @@
 #include <atomic>
 #include <memory>
-#include "Aliases.cpp"
+#include "Aliases.h"
 
 using Order = Aliases::Order;
 
 
 // Vyukov Queue
+
+
 struct OrderNode {
     std::atomic<OrderNode*> next;
     Order value;
-
-
 };
 
 
@@ -18,9 +18,12 @@ struct OrderNode {
 class MPSC{
 
 public:
-    MPSC() : stub{new OrderNode()}, head(stub.get()), tail(stub.get()) {
+    MPSC() 
+        : stub{new OrderNode()}, 
+        head(stub.get()), 
+        tail(stub.get()) {
 
-        stub->next.store(nullptr)
+        stub->next.store(nullptr);
 
     }
 

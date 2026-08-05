@@ -1,8 +1,4 @@
-#include "Aliases.cpp"
-#include <queue>
-#include <vector>
-#include <iostream>
-#include <unordered_map>
+#include "Aliases.h"
 
 using Price = Aliases::Price;
 using Quantity = Aliases::Quantity;
@@ -24,6 +20,7 @@ public:
     void PerformPerCLK(){
         
     }
+
 private:
     Symbol m_Name;
     std::vector<Order>* m_OrderLog = new std::vector<Order>{};

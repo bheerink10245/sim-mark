@@ -1,21 +1,22 @@
 #include "OrderBook.h"
-
 #include <numeric>
 #include <chrono>
 #include <ctime>
 #include <optional>
 
-void OrderBook::PruneGoodForDayOrders(){
+
+void OrderBook::PruneGoodForDayOrders()
+{
 
     
 }
 
 void OrderBook::CancelOrder(OrderIds orderIds)
 {
-    std::scoped_lock ordersLock( ordersMutex;)
+    std::scoped_lock ordersLock( ordersMutex);
 
     for (const auto& orderId: orderIds)
-        CancelOrderInteral(orderId);
+        CancelOrderInternal(orderId);
 }
 
 void OrderBook::CancelOrderInternal(OrderId orderId)
@@ -38,7 +39,7 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
     else
     {   auto price = order->GetPrice();
         auto& orders = bidsMap.at(price);
-        orders.erase(iteartor);
+        orders.erase(iterator);
         if(orders.empty())
         {
             bidsMap.empty();
@@ -84,7 +85,6 @@ void OrderBook::UpdateLevelData(Price price, Quantity quantity, LevelData::Actio
 
 }
 
-
 bool OrderBook::CanFullyFill(Side side, Price price, Quantity quantity) const
 {
     if(!CanMatch(side, price))
@@ -94,7 +94,7 @@ bool OrderBook::CanFullyFill(Side side, Price price, Quantity quantity) const
 
     if(side == Side::Buy)
     {
-        const auto = [askPrice, _] = *asksMap.begin();
+        const auto [askPrice, _] = *asksMap.begin();
         threshold = askPrice;
     }
     else
@@ -133,7 +133,7 @@ bool OrderBook::CanMatch(Side side, Price price) const
             {return false;}
         
         const auto& [bestAsk, _] = *asksMap.begin();
-        return price >= betAsk;
+        return price >= bestAsk;
     }
     else
     {
@@ -243,8 +243,7 @@ OrderBook::~OrderBook()
     ordersPruneThread.join();
 }
 
-Trades OrderBook::AddOrder(OrderPointer order)
-{
+Trades OrderBook::AddOrder(OrderPointer order){
     std::scoped_lock orderLock {ordersMutex};
 
     if(ordersMap.contains(order->GetOrderId()));
@@ -284,8 +283,7 @@ Trades OrderBook::AddOrder(OrderPointer order)
         orders.push_back(order);
         iterator = std::prev(orders.end());
     }
-    else
-    {
+    else{
         auto& orders = asksMap[order->GetPrice()];
         orders.push_back(order);
         iterator = std::prev(orders.end());
@@ -309,24 +307,21 @@ void OrderBook::CancelOrder(OrderId orderId)
 
 Trades OrderBook::ModifyOrder(OrderModify order)
 {
-    OrderType orderType;
+	OrderType orderType;
 
-    {
-        std::scoped_lock orderLock {ordersMutex};
+	{
+		std::scoped_lock ordersLock{ ordersMutex };
 
-        if(!ordersMap.contains(order.GetOrderId()))
-            return {};
+		if (!ordersMap.contains(order.GetOrderId()))
+			return { };
 
-        const auto& [exOrder, _] = ordersMap.at(order.GetOrderId());
-        orderType = exOrder->GetOrderType();
+		const auto& [existingOrder, _] = ordersMap.at(order.GetOrderId());
+		orderType = existingOrder->GetOrderType();
+	}
 
-    }   
-
-    CancelOrder(order.GetOrderId());
-    return AddOrder(order.ToOrderPointer(orderType));
-
+	CancelOrder(order.GetOrderId());
+	return AddOrder(order.ToOrderPointer(order));
 }
-
 
 size_t OrderBook::Size() const
 {
@@ -340,7 +335,7 @@ OrderBookLevelInfos OrderBook::GetOrderInfos() const
     bidInfos.reserve(ordersMap.size());
     askInfos.reserve(ordersMap.size());
 
-    auto CreateLevelInfos = [] (Price price, const OrderPointer& orders)
+    auto CreateLevelInfos = [] (Price price, const OrderPointers& orders)
     {
         return LevelInfo{ price, std::accumulate(orders.begin(), orders.end(),(Quantity)0, [] (Quantity runningSum, const OrderPointer& order) 
         {return runningSum + order->GetRemainingQuantity(); } ) };

@@ -1,10 +1,9 @@
 // This simulation is run on a i7-14700K(Raptor Lake Refresh), 20 cores, 28 threads. 8 P-Cores, 12 E-Cores
 
-#include "Aliases.cpp" 
-#include "Maker.cpp"
+#include "Aliases.h"
+#include "Ticker.cpp"
 #include "Player.cpp"
-#include "Asset.cpp"
-#include "Timer.cpp"
+#include "Maker.cpp"
 
 
 #include <thread> 
@@ -57,35 +56,6 @@ public:
 
 
     }
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    struct MarketData 
-    {
-    public:
-        MarketData() : 
-        {}
-
-
-    };
 
 
 private:
