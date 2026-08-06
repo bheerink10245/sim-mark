@@ -1,62 +1,43 @@
-#include <atomic>
-#include <memory>
-#include "Aliases.h"
-
-using Order = Aliases::Order;
-
-
-// Vyukov Queue
-
-
-struct OrderNode {
-    std::atomic<OrderNode*> next;
-    Order value;
-};
+#include "MPSC.h"
 
 
 
-class MPSC{
+MPSC::MPSC() 
+    : Stub{new OrderNode()}, 
+    HeadNode(Stub.get()), 
+    TailNode(Stub.get()) 
+{
 
-public:
-    MPSC() 
-        : stub{new OrderNode()}, 
-        head(stub.get()), 
-        tail(stub.get()) {
+    Stub->NextNode.store(nullptr);
 
-        stub->next.store(nullptr);
+}
 
+MPSC::~MPSC(){
+
+    
+}
+
+void MPSC::push(OrderPointer Order){
+    OrderNode Ordernode = OrderNode(Order);
+    Ordernode->NextNode.store(nullptr, std::memory_order_relaxed);
+    Ordernode* prev = TailNode.exchange(Ordernode, std::memory_order_acq_rel);
+    prev->NextNode.store(Ordernode, std::memory_order_release);
+
+}
+
+OrderPointer MPSC::pop(){
+
+    OrderNode* HeadCopy = HeadNode.load(std::memory_order_relaxed);
+    OrderNode* next = HeadCopy->NextNode.load(std::memory_order_acquire);
+
+    if(next != nullptr){
+        HeadNode.store(next, std::memory_order_acquire);
+        HeadCopy->NodeValue = next->NodeValue;
+        return HeadCopy->NodeValue;
     }
-
-    ~MPSC(){
-        
-    }
-    void push(OrderNode* OrderNode){
-
-        OrderNode->next.store(nullptr, std::memory_order_relaxed);
-        OrderNode* prev = tail.exchange(OrderNode, std::memory_order_acq_rel);
-        prev->next.store(OrderNode, std::memory_order_release);
-
-    }
-
-    OrderNode* pop(){
-
-        OrderNode* head_copy = head.load(std::memory_order_relaxed);
-        OrderNode* next = head_copy->next.load(std::memory_order_accquire);
-
-        if(next != nullptr){
-            head.store(next, std::memory_order_accquire);
-            head_copy-> value = next_value->value;
-            return head_copy;
-
-        }
-        return nullptr;
-
-    }
-
-private:
-    std::unique_ptr<OrderNode> stub;
-    std::atomic<OrderNode*> head;
-    std::atomic<OrderNode*> tail;
+    return nullptr;
+}
 
 
-};
+
+

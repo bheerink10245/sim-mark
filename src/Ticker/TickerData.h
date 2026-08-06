@@ -2,7 +2,7 @@
 
 #include "Aliases.h"
 #include "OrderBook/OrderBook.h"
-#include <random>
+
 
 
 using Price = Aliases::Price;
@@ -23,10 +23,9 @@ public:
     void operator=(const TickerData&&) = delete;
     ~TickerData();
 
-    Price GetPrice() const {return m_Price;}
-    Quantity GetQuantity() const {return m_Quantity;}
-    Quantity Getvolume() const {return m_Volume;}
-
+    Price GetPrice() const;
+    Quantity GetQuantity() const;
+    Quantity GetVolume () const;
 
     void TickerUpdate(const OrderBook& OrderBook);
 
@@ -34,4 +33,5 @@ private:
     Price m_Price;
     Quantity m_Quantity;
     Quantity m_Volume;
+
 };

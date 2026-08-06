@@ -277,7 +277,7 @@ Trades OrderBook::AddOrder(OrderPointer order){
         return {};
        
     
-    OrderPointers::iterator iteartor;
+    OrderPointers::iterator iterator;
 
     if(order->GetSide() == Side::Buy);
     {
@@ -285,7 +285,7 @@ Trades OrderBook::AddOrder(OrderPointer order){
         orders.push_back(order);
         iterator = std::prev(orders.end());
     }
-    else{
+    else {
         auto& orders = asksMap[order->GetPrice()];
         orders.push_back(order);
         iterator = std::prev(orders.end());
@@ -332,6 +332,7 @@ size_t OrderBook::Size() const
 }
 
 OrderBookLevelInfos OrderBook::GetOrderInfos() const
+
 {
     LevelInfos bidInfos, askInfos;
     bidInfos.reserve(ordersMap.size());

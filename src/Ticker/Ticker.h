@@ -3,12 +3,15 @@
 #include "Aliases.h"
 #include "OrderBook/OrderBook.h"
 #include "MPSC.h"
+#include "TickerData.h"
+#include "Timer.h"
 
 #include <iostream>
 #include <vector>
 #include <random>
 #include <memory>
 #include <unordered_map>
+#include <map>
 #include <expected>
 
 
@@ -36,21 +39,32 @@ using Trades = Aliases::Trades;
 class Ticker{
 public:
 
-    Ticker();
+    Ticker(const Symbol& name);
     Ticker(const Ticker&) = delete;
     void operator=(const Ticker&) = delete;
     Ticker(const Ticker&&) = delete;
     void operator=(const Ticker&&) = delete;
     ~Ticker();
    
+    Price GetTickerPrice() const ;
+    Quantity GetTickerQuantity() const;
+    Quantity GetTickerVolume() const ;
     
-    void PerformPerClk();
-    void PerformOrderMatch(const OrderPointer& order);
+    void PerformPerCLK();
+    void PerformOrderMatch(const OrderPointer& order, OrderBook& OrderBook);
+
+    void LogTrade(const OrderId& OrderID, const TradeInfo& Info);
+    void LogOrder(const OrderId& OrderID, const Order& Info);
+    TradeInfo GetTradeInfo(const OrderId& OrderID) const;
+    Order GetOrderInfo(const OrderId& OrderID) const;
+
 
 private:
-    Symbol m_Name;
-    std::unique_ptr<TickerData> m_DataPtr;
-    std::unique_ptr<OrderBook::OrderBook> m_OrderBookPtr;
-    std::shared_ptr<MPSC> m_TickerQueuePtr;
 
+    Symbol m_Name;
+    std::unique_ptr<OrderBook> m_OrderBookPtr;
+    std::shared_ptr<MPSC> m_TickerQueuePtr;
+    std::unique_ptr<TickerData> m_DataPtr;
+    std::map<OrderId, TradeInfo, std::greater<OrderId>> TradeLog;
+    std::map<OrderId, Order, std::greater<OrderId>> OrderLog;
 };
