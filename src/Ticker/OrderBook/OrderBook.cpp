@@ -52,6 +52,9 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
     
 }
 
+
+
+
 void OrderBook::OnOrderCancelled(OrderPointer order)
 {
     UpdateLevelData(order->GetPrice(), order->GetRemainingQuantity(), LevelData::Action::Remove);
@@ -67,6 +70,9 @@ void OrderBook::OnOrderMatched(Price price, Quantity quantity, bool isFullyFille
 {
     UpdateLevelData(price, quantity, isFullyFilled ? LevelData::Action::Remove : LevelData::Action::Match);
 }
+
+
+
 
 void OrderBook::UpdateLevelData(Price price, Quantity quantity, LevelData::Action action)
 {
@@ -147,6 +153,8 @@ bool OrderBook::CanMatch(Side side, Price price) const
     }
 
 }
+
+
 
 Trades OrderBook::MatchOrders()
 {
@@ -244,6 +252,9 @@ OrderBook::~OrderBook()
     shutdownCondtionVariables.notify_one();
     ordersPruneThread.join();
 }
+
+
+
 
 Trades OrderBook::AddOrder(OrderPointer order){
     std::scoped_lock orderLock {ordersMutex};

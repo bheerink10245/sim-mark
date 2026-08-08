@@ -6,6 +6,7 @@
 #include "TickerData.h"
 #include "Timer.h"
 
+
 #include <iostream>
 #include <vector>
 #include <random>
@@ -55,8 +56,8 @@ public:
 
     void LogTrade(const OrderId& OrderID, const TradeInfo& Info);
     void LogOrder(const OrderId& OrderID, const Order& Info);
-    TradeInfo GetTradeInfo(const OrderId& OrderID) const;
-    Order GetOrderInfo(const OrderId& OrderID) const;
+    TradeInfo GetTradeInfo(const TimeStamp& OrderID) const;
+    Order GetOrderInfo(const TimeStamp& OrderID) const;
 
 
 private:
@@ -65,6 +66,6 @@ private:
     std::unique_ptr<OrderBook> m_OrderBookPtr;
     std::shared_ptr<MPSC> m_TickerQueuePtr;
     std::unique_ptr<TickerData> m_DataPtr;
-    std::map<OrderId, TradeInfo, std::greater<OrderId>> TradeLog;
-    std::map<OrderId, Order, std::greater<OrderId>> OrderLog;
+    std::map<TimeStamp, OrderId, std::greater<TimeStamp>> TradeLog;
+    std::map<TimeStamp, OrderId, std::greater<TimeStamp>> OrderLog;
 };

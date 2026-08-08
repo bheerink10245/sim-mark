@@ -17,7 +17,22 @@ void Ticker::PerformPerCLK(){
 } 
 
 void Ticker::PerformOrderMatch(const OrderPointer& order, OrderBook& OrderBook){
-    OrderBook->OrderBook::AddOrder(order);
+    OrderBook.AddOrder(order);
+}
+
+static auto OrderSideStrip(const OrderPointer& order){
+    OrderType orderType = order.GetSide();
+    if(orderType == FillAndKill){
+
+    }else if(orderType == FillOrKill){
+
+    }else if ( orderType == GoodTillCancel){
+
+    }else if (orderType == GoodForDay){
+
+    }else if ( orderType == Market){
+        
+    }
 }
 
 Price Ticker::GetTickerPrice() const {return m_DataPtr->GetPrice();}
