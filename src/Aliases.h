@@ -8,6 +8,7 @@
 #include <vector>
 #include <format>
 #include <stdexcept>
+#include <functional>
 
 //  using Price = Aliases::Price;
 //  using Quantity = Aliases::Quantity;
@@ -38,6 +39,7 @@ namespace Aliases {
     using Quantity = std::uint32_t;
     using OrderId = std::uint64_t;
     using Symbol = std::string;
+
     
     struct Constants {
         static const Price InvalidPrice = std::numeric_limits<Price>::quiet_NaN();
@@ -84,16 +86,24 @@ namespace Aliases {
 
     };
 
+    enum class ActionFunction
+    {
+        AddOrder,
+        CancelOrder,
+        ModifyOrder
+    };
+
     class Order
     {
     public:
-        Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity)
+        Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity, ActionFunctiontion action)
             : m_OrderType{ orderType }
             , m_OrderId{ orderId }
             , m_Side{ side }
             , m_Price{ price }
             , m_initialQuantity{ quantity }
             , m_RemainingQuantity{ quantity }
+            , m_Action { action}
         { }
 
         Order(OrderId orderId, Side side, Quantity quantity)
@@ -101,11 +111,12 @@ namespace Aliases {
         { }
 
         OrderId GetOrderId() const { return m_OrderId; }
-        Side GetSide() const { return m_Side; }
-        Price GetPrice() const { return m_Price; }
+        Side GetOrderSide() const { return m_Side; }
+        Price GetOrderPrice() const { return m_Price; }
         OrderType GetOrderType() const { return m_OrderType; }
         Quantity GetInitialQuantity() const { return m_initialQuantity; }
         Quantity GetRemainingQuantity() const { return m_RemainingQuantity; }
+        ActionFunction GetOrderAction() const {return m_Action; }
         Quantity GetFilledQuantity() const { return GetInitialQuantity() - GetRemainingQuantity(); }
         bool IsFilled() const { return GetRemainingQuantity() == 0; }
         void Fill(Quantity quantity)
@@ -131,6 +142,7 @@ namespace Aliases {
         Price m_Price;
         Quantity m_initialQuantity;
         Quantity m_RemainingQuantity;
+        ActionFunction m_Action;
     };
 
     using OrderPointer = std::shared_ptr<Order>;
@@ -191,6 +203,7 @@ namespace Aliases {
 
     class Signal {
     private:
+
         bool m_Valid;
         Side m_SignalSide;    
         Price m_SignalPrice;
@@ -211,4 +224,5 @@ namespace Aliases {
 
     };
 
+    using strategyFunction = std::function<Signal(const ExchangeData&)>;
 }

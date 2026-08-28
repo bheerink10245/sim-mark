@@ -1,5 +1,8 @@
 #include "Aliases.h"
-#include <map>
+#include "Entity/Entity.h"
+#include "Exchange/ExchangeData.h"
+
+#include <functional>
 
 using Price = Aliases::Price;
 using Quantity = Aliases::Quantity;
@@ -8,31 +11,26 @@ using Symbol = Aliases::Symbol;
 using Side = Aliases::Side;
 using Order = Aliases::Order;
 using TradeInfo = Aliases::TradeInfo;
+using Signal = Aliases::Signal;
+using strategyFuntion = Aliases::strategyFunction;
 
 
 
-class Player{
+class Player : public Entity {
+    
 public:
 
-    Player();
+    Player(const Symbol& name, strategyFunction strategy);
     Player(const Player&) = delete;
-    void operator=(const Player&) = delete;
-    Player(const Player&&) = delete;
-    void operator=(const Player&&) = delete;
+    Player& operator=(const Player&) = delete;
+    Player(Player&&) = delete;
+    Player& operator=(Player&&) = delete;
     ~Player();
 
-    Order GetOrderInfo(const OrderId& ID);
-    TradeInfo GetTradeInfo(const OrderId& ID);
-    void PerformPerClk();
-    Price GetPnL() const {return m_InitCapital - m_RemainingCapital;}
+    void PerformPerCLK(const ExchangeData& Data);
 
 
 private:
-
     Symbol m_Name;
-    std::map<OrderId, TradeInfo, std::greater<OrderId>> TradeLog;
-    std::map<OrderId, Order, std::greater<OrderId>> OrderLog;
-    Price m_InitCapital;
-    Price m_RemainingCapital;
-
+    strategyFunction m_Strategy;
 };

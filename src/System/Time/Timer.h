@@ -8,18 +8,18 @@
 class Timer{
 public:
 
-    Timer(const long long& iterCount);
+    Timer(const unsigned long long& iterCount);
     Timer(const Timer&) = delete;
     void operator=(const Timer&) = delete;
     Timer(const Timer&&) = delete;
     void operator=(const Timer&&) = delete;
 
     void CLK();
-    auto SnapShot() const;
-    long long& GetIterationCount() const;
+    TimeStamp SnapShot() const;
+    unsigned long long GetIterationCount() const {return m_IterationCount;}
     
 private:
     std::chrono::steady_clock::time_point m_Start;
-    long long m_IterationCount; 
+    unsigned long long m_IterationCount; 
 
 };

@@ -1,29 +1,16 @@
-#include "Aliases.h"
 
-using Price = Aliases::Price;
-using Quantity = Aliases::Quantity;
-using OrderId = Aliases::OrderId;
-using Symbol = Aliases::Symbol;
-using Side = Aliases::Side;
-using Order = Aliases::Order;
-using Trade = Aliases::Trade;
-
-class Player {
-public:
-    Player(const Symbol& name) : m_Name{name}, m_InitCapital{100000}{
+#include "Player.h"
 
 
-    }
+Player::Player(const Symbol& name, strategyFunction strategy)
+    : m_Name(name), m_Strategy(std::move(strategy))
+{}
+
+Player::~Player(){
     
-    Price GetPnL() {return m_InitCapital - m_RemainingCapital;}
-    
-    void PerformPerCLK(){
-        
-    }
+}
 
-private:
-    Symbol m_Name;
-    std::vector<Order>* m_OrderLog = new std::vector<Order>{};
-    Price m_InitCapital;
-    Price m_RemainingCapital;
-};
+void Player::PerformPerCLK(const ExchangeData& Data){
+    Signal returnSig = m_Strategy(Data);
+}
+

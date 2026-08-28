@@ -17,10 +17,10 @@ struct OrderNode{
 class MPSC{
 public:
     MPSC();
-    MPSC(const MPSC&) = delete;
-    void operator=(const MPSC&) = delete;
-    MPSC(const MPSC&&) = delete;
-    void operator=(const MPSC&&) = delete;
+    MPSC(MPSC&) = delete;
+    void operator=(MPSC&) = delete;
+    MPSC(MPSC&&) = delete;
+    void operator=(MPSC&&) = delete;
     ~MPSC();
 
     void push(OrderPointer Order);

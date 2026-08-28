@@ -66,16 +66,16 @@ Clock:
 ---------------------------------------------------------------
 Types:
 
-    Price , unsigned 32bit int 
-    Quantity , unsigned 32bit int 
-    OrderId , unsigned 64 bit int 
-    Symbol , string 
+    Price: unsigned 32bit int 
+    Quantity: unsigned 32bit int 
+    OrderId: unsigned 64 bit int 
+    Symbol: string 
 
-    Side, enum class
+    Side:
         -Buy 
         -Sell
     
-    OrderType, enum class: 
+    OrderType: 
         -FillAndKill
         -GoodTillCancel
     

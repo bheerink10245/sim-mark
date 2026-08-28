@@ -27,7 +27,7 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
         return;
     const auto [order, iterator] = ordersMap.at(orderId);
     ordersMap.erase(orderId);
-    if(order->GetSide() == Side::Sell)
+    if(order->GetOrderSide() == Side::Sell)
     {
         auto price = order->GetPrice();
         auto& orders = asksMap.at(price);
@@ -39,7 +39,7 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
 
     }
     else
-    {   auto price = order->GetPrice();
+    {   auto price = order->GetOrderPrice();
         auto& orders = bidsMap.at(price);
         orders.erase(iterator);
         if(orders.empty())
@@ -57,7 +57,7 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
 
 void OrderBook::OnOrderCancelled(OrderPointer order)
 {
-    UpdateLevelData(order->GetPrice(), order->GetRemainingQuantity(), LevelData::Action::Remove);
+    UpdateLevelData(order->GetOrderPrice(), order->GetRemainingQuantity(), LevelData::Action::Remove);
 
 }
 
@@ -252,9 +252,6 @@ OrderBook::~OrderBook()
     shutdownCondtionVariables.notify_one();
     ordersPruneThread.join();
 }
-
-
-
 
 Trades OrderBook::AddOrder(OrderPointer order){
     std::scoped_lock orderLock {ordersMutex};
