@@ -9,6 +9,8 @@
 #include <format>
 #include <stdexcept>
 #include <functional>
+#include <atomic>
+
 
 //  using Price = Aliases::Price;
 //  using Quantity = Aliases::Quantity;
@@ -119,15 +121,15 @@ namespace Aliases {
         ActionFunction GetOrderAction() const {return m_Action; }
         Quantity GetFilledQuantity() const { return GetInitialQuantity() - GetRemainingQuantity(); }
         bool IsFilled() const { return GetRemainingQuantity() == 0; }
-        void Fill(Quantity quantity)
-        {
+
+        void Fill(Quantity quantity){
             if (quantity > GetRemainingQuantity())
                 throw std::logic_error("Order ({}) cannot be filled for more than its remaining quantity.", GetOrderId()));
 
             m_RemainingQuantity -= quantity;
         }
-        void ToGoodTillCancel(Price price) 
-        { 
+
+        void ToGoodTillCancel(Price price) { 
             if (GetOrderType() != OrderType::Market)
                 throw std::logic_error("Order ({}) cannot have its price adjusted, only market orders can.", GetOrderId());
 
@@ -228,3 +230,5 @@ namespace Aliases {
     using strategyFunction = std::function<Signal(const ExchangeData&)>;
     using ModelFunction = std::function<Signal(Ticker ticker)>;
 }
+
+

@@ -36,13 +36,15 @@ public:
 
     }
 
-    OrderPointer OrderBuild(Signal signal){
-        if(signal.GetSignalValidity() == false) { return nullptr;}
+    OrderPointer OrderBuild(Signal signal , IdGenerator& id_gen){
+        if(signal.GetSignalValidity() == false) { 
+            return nullptr;
+        }
         
 
         OrderType type;
-        OrderId ID;
-        Side side;
+        OrderId ID = id_gen.GenerateId();
+        Side side = signal.GetSignalSide();
         Price price;
         Quantity quantity;
         ActionFunction action;

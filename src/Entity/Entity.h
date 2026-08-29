@@ -40,6 +40,13 @@ public:
     void LogTrade(const TimeStamp& ts, const OrderId& ID);
     void LogOrder(const TimeStamp& ts, const OrderId& ID);
     
+    class IdGenerator {
+    public:
+        [[nodiscard]] OrderId GenerateId() { return next_id_.fetch_add(1, std::memory_order_relaxed);}
+    private:
+        std::atomic<uint64_t> next_id_{1};
+    };
+
     Price GetPnL() const {return m_InitCapital - m_RemainingCapital;}
 
 protected:

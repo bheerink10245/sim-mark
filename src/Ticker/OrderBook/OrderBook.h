@@ -2,16 +2,12 @@
 
 #include "Aliases.h"
 
-
 #include <map>
 #include <unordered_map>
 #include <thread>
 #include <condition_variable>
 #include <mutex>
 #include <atomic>
-
-
-
 
 using Price = Aliases::Price;
 using Quantity = Aliases::Quantity;
