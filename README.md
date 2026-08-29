@@ -1,6 +1,5 @@
-This is a simplified local exchange market. You initliaze the number of tickers # you want there to exist, the number of market makers can be custom or based off of the "optimal" amount based off Player and Ticker counter. Players are inintialize each withe their own strategy, which they use to "maximize" their profits. 
+This is a simplified local exchange market. You initliaze the number of tickers you want there to exist (machine constraint), and number of players with its own strategy.
 
 The goal of this project is NOT to create profitable/efficient trading strategies on the player or the efficiency of the market. 
-Rather my project aims to optimize the efficiency of exchange communication and actions using the C++ 23 Concurrency Library. 
 
-
+I would also like to clarify this is very much a work in progress. There are major bugs. Any suggestions are happily appreciated.

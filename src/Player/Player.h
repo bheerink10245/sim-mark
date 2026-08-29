@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Aliases.h"
 #include "Entity/Entity.h"
 #include "Exchange/ExchangeData.h"
@@ -29,8 +31,42 @@ public:
 
     void PerformPerCLK(const ExchangeData& Data);
 
+    static Signal StrategyAPI(const ExchangeData& data){
+
+
+    }
+
+    OrderPointer OrderBuild(Signal signal){
+        if(signal.GetSignalValidity() == false) { return nullptr;}
+        
+
+        OrderType type;
+        OrderId ID;
+        Side side;
+        Price price;
+        Quantity quantity;
+        ActionFunction action;
+
+
+        return std::make_shared<Order>(type, ID, side, price, quantity, action);
+        
+    } 
+
+
 
 private:
-    Symbol m_Name;
+
     strategyFunction m_Strategy;
+
 };
+
+
+/**
+ * INHERITED:
+ *  Symbol m_Name;
+    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_TradeLog;
+    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_OrderLog;
+    strategyFunction m_Strategy;
+    Price m_InitCapital;
+    Price m_RemainingCapital;
+ */

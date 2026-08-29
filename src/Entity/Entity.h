@@ -1,3 +1,4 @@
+#pragma once
 
 #include "Aliases.h"
 #include "System/Time/Timer.h"
@@ -32,23 +33,21 @@ using ActionFunction = Aliases::ActionFunction;
 class Entity {
 public:
 
+    Entity(const Symbol& name, Price initCapital);
 
     std::expected<Order, std::invalid_argument> GetOrderInfo(const OrderId& OrderID) const;
     std::expected<TradeInfo, std::invalid_argument> GetTradeInfo(const OrderId& OrderID) const;
     void LogTrade(const TimeStamp& ts, const OrderId& ID);
     void LogOrder(const TimeStamp& ts, const OrderId& ID);
     
-    void virtual PerformPerCLK(const ExchangeData& Data) = 0;
-
     Price GetPnL() const {return m_InitCapital - m_RemainingCapital;}
-
 
 protected:
 
     Symbol m_Name;
-    std::map<TimeStamp, OrderId, std::greater<OrderId>> TradeLog;
-    std::map<TimeStamp, OrderId, std::greater<OrderId>> OrderLog;
+    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_TradeLog;
+    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_OrderLog;
     Price m_InitCapital;
     Price m_RemainingCapital;
-
+    
 };

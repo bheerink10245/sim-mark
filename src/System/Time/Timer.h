@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Aliases.h"
 #include "TimeStamp.h"
 

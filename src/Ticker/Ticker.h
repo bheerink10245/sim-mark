@@ -7,6 +7,7 @@
 #include "TickerData.h"
 #include "System/Time/Timer.h"
 #include "Entity.h"
+#include "Maker/Maker.h"
  
  
  
@@ -41,6 +42,7 @@ using TradeInfo = Aliases::TradeInfo;
 using Trade = Aliases::Trade;
 using Trades = Aliases::Trades;
 using ActionFunction = Aliases::ActionFunction;
+using ModelFunction = Aliases::ModelFunction;
  
  
 class Ticker{
@@ -103,32 +105,13 @@ private:
     std::unique_ptr<OrderBook> m_OrderBookPtr;
     std::shared_ptr<MPSC> m_TickerQueuePtr;
     std::unique_ptr<TickerData> m_DataPtr;
+
+    std::unique_ptr<Maker> m_MakerOne;
+    std::unique_ptr<Maker> m_MakerTwo;
+
     std::map<TimeStamp, OrderId, std::greater<TimeStamp>> TradeLog;
     std::map<TimeStamp, OrderId, std::greater<TimeStamp>> OrderLog;
+
 };
  
 
-struct TickerHash {
-    using is_transparent = void;
- 
-    size_t operator()(const Ticker& t) const noexcept {
-        return std::hash<Symbol>{}(t.GetName());
-    }
-    size_t operator()(const Symbol& s) const noexcept {
-        return std::hash<Symbol>{}(s);
-    }
-};
- 
-struct TickerEqual {
-    using is_transparent = void;
- 
-    bool operator()(const Ticker& a, const Ticker& b) const {
-        return a.GetName() == b.GetName();
-    }
-    bool operator()(const Ticker& a, const Symbol& b) const {
-        return a.GetName() == b;
-    }
-    bool operator()(const Symbol& a, const Ticker& b) const {
-        return a == b.GetName();
-    }
-};

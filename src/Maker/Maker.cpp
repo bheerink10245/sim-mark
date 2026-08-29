@@ -2,16 +2,23 @@
 #include "Maker.h"
 
 
-Maker::Maker(const Symbol& name) : m_Name{name}, m_InitCapital{10000000.00}{
 
 
-}
+Maker::Maker(const Symbol& name, const Ticker* ticker, ModelFunction strategy)
+    : Entity{name, 1000000.00}
+    , m_Strategy{std::move(strategy)}
+    , m_OwningTicker{ticker}
+
+{ }
 
 Maker::~Maker(){
 
+    delete m_OwningTicker;
 }
 
-void Maker::PerformPerCLK(const ExchangeData& Data){
+
+
+void Maker::PerformPerCLK(Ticker ticker){
 
     // Process Exchange Data
     // Run against model for adjustive prices
@@ -20,6 +27,3 @@ void Maker::PerformPerCLK(const ExchangeData& Data){
 }
 
 
-static Signal Maker::SignalBuilder(const Ticker& ticker){
-    
-}

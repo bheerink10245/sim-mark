@@ -96,7 +96,7 @@ namespace Aliases {
     class Order
     {
     public:
-        Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity, ActionFunctiontion action)
+        Order(OrderType orderType, OrderId orderId, Side side, Price price, Quantity quantity, ActionFunction action)
             : m_OrderType{ orderType }
             , m_OrderId{ orderId }
             , m_Side{ side }
@@ -207,6 +207,7 @@ namespace Aliases {
         bool m_Valid;
         Side m_SignalSide;    
         Price m_SignalPrice;
+        
 
 
     public:
@@ -225,4 +226,5 @@ namespace Aliases {
     };
 
     using strategyFunction = std::function<Signal(const ExchangeData&)>;
+    using ModelFunction = std::function<Signal(Ticker ticker)>;
 }

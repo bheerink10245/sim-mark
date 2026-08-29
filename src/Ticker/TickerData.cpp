@@ -3,7 +3,13 @@
 
 #include <random>
 
-TickerData::TickerData() : m_Price(0.0), m_Quantity(100000), m_Volume(0) {
+TickerData::TickerData() : 
+    m_Price(0.0),
+    m_Quantity(100000),
+    m_Volume(0) 
+    
+{
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(1.00, 200.0);

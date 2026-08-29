@@ -1,18 +1,28 @@
 
 #include "Ticker.h"
   
+
+ModelFunction strat1;
+ModelFunction strat2;
+
+std::vector<ModelFunction> strats = {strat1,strat2};
+
 Ticker::Ticker(const Symbol& Name) 
     : m_Name{Name}, 
-    m_OrderBookPtr{std::make_unique<OrderBook>(new OrderBook)},
-    m_TickerQueuePtr{std::make_shared<MPSC>(new MPSC)},
-    m_DataPtr{std::make_unique<TickerData>(new TickerData)}
+    m_OrderBookPtr{std::make_unique<OrderBook>()},
+    m_TickerQueuePtr{std::make_shared<MPSC>()},
+    m_DataPtr{std::make_unique<TickerData>()},
+    m_MakerOne{std::make_unique<Maker>("1", this, strats.at(0))},
+    m_MakerTwo{std::make_unique<Maker>("2", this, strats.at(1))}
 {}
 
 Ticker::~Ticker() {}
 
 void Ticker::PerformPerCLK(){
     OrderPointer NEXT_Order = m_TickerQueuePtr->pop();
-    
+    // Makers need to be fed data 
+    //Makers need to make liquidity adjustment
+    //Allow makers into Queue
     PerformOrderMatch(NEXT_Order, *(m_OrderBookPtr));   
     // Respond to exchange with status update. Exchange handles owner comms
     //Add Logging Data and Feedback from PerformOrderMatch                                                        
