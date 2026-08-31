@@ -5,15 +5,14 @@
 ModelFunction strat1;
 ModelFunction strat2;
 
-std::vector<ModelFunction> strats = {strat1,strat2};
 
 Ticker::Ticker(const Symbol& Name) 
     : m_Name{Name}, 
     m_OrderBookPtr{std::make_unique<OrderBook>()},
     m_TickerQueuePtr{std::make_shared<MPSC>()},
     m_DataPtr{std::make_unique<TickerData>()},
-    m_MakerOne{std::make_unique<Maker>("1", this, strats.at(0))},
-    m_MakerTwo{std::make_unique<Maker>("2", this, strats.at(1))}
+    m_MakerOne{std::make_unique<Maker>("1", this, strat1)},
+    m_MakerTwo{std::make_unique<Maker>("2", this, strat2)}
 {}
 
 Ticker::~Ticker() {}
@@ -43,7 +42,8 @@ void Ticker::PerformOrderMatch(const OrderPointer& order, OrderBook& OrderBook){
     }
 
 }
-Symbol Ticker::GetName() const {return m_Symbol;}
+
+Symbol Ticker::GetName() const {return m_Name;}
 Price Ticker::GetTickerPrice() const {return m_DataPtr->GetPrice();}
 Quantity Ticker::GetTickerQuantity() const {return m_DataPtr->GetQuantity();}
 Quantity Ticker::GetTickerVolume() const {return m_DataPtr->GetVolume();}

@@ -12,9 +12,11 @@ Timer::Timer(const unsigned long long& iterCount)
 
 void Timer::CLK() {m_IterationCount++;}
 
-TimeStamp Timer::SnapShot() const {
+TimeStamp Timer::SnapShot() const { 
+
     auto elapsed = std::chrono::steady_clock::now() - m_Start;
     return TimeStamp{std::chrono::duration_cast<std::chrono::milliseconds>(elapsed)};
+    
 }
 
 

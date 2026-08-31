@@ -12,9 +12,9 @@ public:
 
     Timer(const unsigned long long& iterCount);
     Timer(const Timer&) = delete;
-    void operator=(const Timer&) = delete;
+    Timer& operator=(const Timer&) = delete;
     Timer(const Timer&&) = delete;
-    void operator=(const Timer&&) = delete;
+    Timer& operator=(const Timer&&) = delete;
 
     void CLK();
     TimeStamp SnapShot() const;

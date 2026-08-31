@@ -56,7 +56,7 @@ public:
     ~Ticker();
  
    // All Self Exlplanatory APIs
-    const Symbol& GetName() const;
+    Symbol GetName() const;
     Price GetTickerPrice() const ;
     Quantity GetTickerQuantity() const;
     Quantity GetTickerVolume() const ;
@@ -96,8 +96,10 @@ public:
      * @returns: Either Order if OrderID value existed within TradeLog, returns invalid arguement if not.
      */
     std::expected<Order, std::invalid_argument> GetOrderInfo(const OrderId& OrderID) const;
-    // Self Explanatory
-    bool operator==(const Ticker& other) const;
+    
+    void TickerEnqueue(OrderPointer order){
+        m_TickerQueuePtr->push(order);
+    }
  
 private:
  

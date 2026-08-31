@@ -22,6 +22,12 @@ class Exchange{
 public:
 
 
+    Exchange(const Exchange&) = delete;
+    Exchange& operator=(const Exchange&) = delete;
+    Exchange(Exchange&&) = delete;
+    Exchange& operator=(Exchange&&) = delete;
+    ~Exchange();
+
     Exchange(const uint64_t& runs);
 
     /**
