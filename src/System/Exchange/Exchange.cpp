@@ -5,12 +5,17 @@ Exchange::Exchange(const uint64_t& runs)
     : m_Runs{runs}, 
     m_Clock{std::make_unique<Timer>(Timer(0))},
     m_TickerContainerPtr{std::make_shared<std::unordered_map<Symbol, std::shared_ptr<Ticker>>>()},
-    m_PlayerContainerPtr{std::make_shared<std::unordered_map<Symbol, std::shared_ptr<Player>>>()}
+    m_PlayerContainerPtr{std::make_shared<std::unordered_map<Symbol, std::shared_ptr<Player>>>()},
+    m_IdGenerator {std::make_shared<IdGenerator>()}
 
 
 
 { }
 
+
+void Exchange::DependencyInits(){
+
+}
 
 void Exchange::TickerInit(uint8_t tickerNums){
     

@@ -52,7 +52,7 @@ public:
     Ticker(const Ticker&) = delete;
     Ticker& operator=(const Ticker&) = delete;
     Ticker(Ticker&&) = delete;
-    Ticker& operator=(Ticker&&) = delete;
+    Ticker& operator=(const Ticker&&) = delete;
     ~Ticker();
  
    // All Self Exlplanatory APIs
@@ -96,7 +96,9 @@ public:
      * @returns: Either Order if OrderID value existed within TradeLog, returns invalid arguement if not.
      */
     std::expected<Order, std::invalid_argument> GetOrderInfo(const OrderId& OrderID) const;
-    
+    /**
+     * @purpose:Add order into Ticker Queue
+     */
     void TickerEnqueue(OrderPointer order){
         m_TickerQueuePtr->push(order);
     }

@@ -72,5 +72,6 @@ std::expected<Order, std::invalid_argument> Ticker::GetOrderInfo(const OrderId& 
         return keyValue->second;
     }
     return std::unexpected(std::invalid_argument("OrderID not found"));
+    
 }
 

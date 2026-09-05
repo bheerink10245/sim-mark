@@ -16,6 +16,7 @@ using Trades = Aliases::Trades;
 
 class TickerData{
 public:
+
     TickerData();
     TickerData(const TickerData&) = delete;
     void operator=(const TickerData&) = delete;
@@ -27,11 +28,17 @@ public:
     Quantity GetQuantity() const;
     Quantity GetVolume () const;
 
-    void TickerUpdate(const OrderBook& OrderBook);
+
 
 private:
     Price m_Price;
     Quantity m_Quantity;
     Quantity m_Volume;
+
+    void ReCalculateVolume();
+    void ReCalculateQuantity();
+    void TickerUpdate(const OrderBook& OrderBook);
+
+    
 
 };

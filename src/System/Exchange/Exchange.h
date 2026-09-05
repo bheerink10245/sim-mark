@@ -6,6 +6,7 @@
 #include "Player/Player.h"
 #include "Ticker/Ticker.h"
 #include "ExchangeData.h"
+#include "IdGenerator.h"
 
 #include <unordered_map>
 #include <thread> 
@@ -30,6 +31,10 @@ public:
 
     Exchange(const uint64_t& runs);
 
+    /**
+     * @purpose: initilaize exchange dependencies
+     */
+    void DependencyInits();
     /**
      * 
      * @overview:Ticker number is machine based off of Processor arch
@@ -62,6 +67,7 @@ private:
     std::unique_ptr<Timer> m_Clock;
     std::shared_ptr<std::unordered_map<Symbol, std::shared_ptr<Ticker>>> m_TickerContainerPtr;
     std::shared_ptr<std::unordered_map<Symbol, std::unique_ptr<Player>>> m_PlayerContainerPtr;
+    std::shared_ptr<IdGenerator> m_IdGenerator;
     
 };
 

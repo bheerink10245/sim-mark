@@ -13,13 +13,15 @@
 
 class ExchangeData {
 
+public:
 
     ExchangeData(const Exchange& exchange);
+`
+    std::expected<Ticker, std::invalid_arguement> FindSpecificTicker(const Symbol& name);
+    const Ticker& GetSpecifcTicker(const Ticker& ticker);
+    Price GetSpecficTickerPrice(const Symbol& tickerName);
+    Quantity GetSpecificTickerQuantity(const Symbol& tickerName);
+    Quantity GetSpecificTickerVolume(const Symbol& tickerName);
 
-    
-    std::expected<std::reference_wrapper<const Ticker>, std::invalid_argument> GetTickerObject(const Symbol& tickerSymbol) const;
-    
-
-    
     
 };
