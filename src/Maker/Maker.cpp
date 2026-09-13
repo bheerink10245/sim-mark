@@ -1,19 +1,29 @@
 
 #include "Maker.h"
 
+#include "Entity/Entity.h"
+#include "Ticker/Ticker.h"
+#include "Ticker/TickerData.h"
+#include "Aliases/Signal.h"
+#include "System/IdGenerator/IdGenerator.h"
+#include "System/Time/Timer.h"
+#include "System/Time/TimeStamp.h"
 
 
+Maker::Maker(const Symbol& name
+    , const TickerData& tickerData
+    , ModelFunction strategy
+    , std::shared_ptr<const Timer> timer
+    , IdGenerator generator)
 
-Maker::Maker(const Symbol& name, const Ticker* ticker, ModelFunction strategy)
-    : Entity{name, 1000000.00}
+    : Entity{name, 1000000.00 , timer, generator}
     , m_Strategy{std::move(strategy)}
-    , m_OwningTicker{ticker}
+    , m_Ticker{tickerData}
 
 { }
 
 Maker::~Maker(){
 
-    delete m_OwningTicker;
 }
 
 
@@ -25,5 +35,24 @@ void Maker::PerformPerCLK(Ticker ticker){
 
 
 }
+
+
+
+OrderPointer OrderBuild(Signal signal){
+    
+    if(signal.GetSignalValidity() == false) { return nullptr;}
+    
+
+    OrderType type;
+    OrderId ID;
+    Side side;
+    Price price;
+    Quantity quantity;
+    ActionFunction action;
+
+
+    return std::make_shared<Order>(type, ID, side, price, quantity, action);
+        
+} 
 
 

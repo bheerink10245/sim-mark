@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Aliases.h"
+#include "Aliases/Aliases.h"
 
 #include <atomic>
 #include <memory>
 
-using Order = Aliases::Order;
-using OrderPointer = Aliases::OrderPointer;
+
+class Order;
 
 struct OrderNode{
     OrderNode(const OrderPointer& Order) : NodeValue{Order} {}

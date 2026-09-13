@@ -1,22 +1,22 @@
 #pragma once
 
-#include "Aliases.h"
-#include "System/Time/Timer.h"
-#include "System/Exchange/Exchange.h"
-#include "Entity/Entity.h"
-
-#include <map>
-#include <cmath>
+#include "Aliases/Aliases.h"
+#include <functional>
+#include <memory>
+#include <string>
 
 
-using Price = Aliases::Price;
-using Quantity = Aliases::Quantity;
-using OrderId = Aliases::OrderId;
-using Symbol = Aliases::Symbol;
-using Side = Aliases::Side;
-using Order = Aliases::Order;
-using TradeInfo = Aliases::TradeInfo;
-using ModelFunction = std::function<Signal(Ticker ticker)>;
+using ModelFunction = std::function<Signal(const TickerData&)>;
+
+class Entity;
+
+class Order;
+class Ticker;
+class TickerData;
+class Signal;
+class IdGenerator;
+class Timer;
+class TimeStamp;
 
 
 
@@ -24,7 +24,12 @@ class Maker : public Entity {
 
 public:
 
-    Maker(const Symbol& name, const Ticker* ticker, ModelFunction strategy);
+    Maker(const Symbol& name
+        , const TickerData& tickerData
+        , ModelFunction strategy
+        , std::shared_ptr<const Timer> timer
+        , IdGenerator generator);
+
     Maker(const Maker&) = delete;
     Maker& operator=(const Maker&) = delete;
     Maker(Maker&&) = delete;
@@ -57,17 +62,8 @@ public:
 
 private:
 
-    Ticker* m_OwningTicker;
+    const TickerData& m_Ticker;
     ModelFunction m_Strategy;
 };
 
 
-/**
- * INHERITED:
- *  Symbol m_Name;
-    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_TradeLog;
-    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_OrderLog;
-    strategyFunction m_Strategy;
-    Price m_InitCapital;
-    Price m_RemainingCapital;
- */

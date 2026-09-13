@@ -2,18 +2,22 @@
 #include "Ticker.h"
   
 
-ModelFunction strat1;
-ModelFunction strat2;
 
 
-Ticker::Ticker(const Symbol& Name) 
-    : m_Name{Name}, 
-    m_OrderBookPtr{std::make_unique<OrderBook>()},
-    m_TickerQueuePtr{std::make_shared<MPSC>()},
-    m_DataPtr{std::make_unique<TickerData>()},
-    m_MakerOne{std::make_unique<Maker>("1", this, strat1)},
-    m_MakerTwo{std::make_unique<Maker>("2", this, strat2)}
-{}
+
+Ticker::Ticker(const Symbol& name, 
+    std::shared_ptr<const Timer> timer, 
+    IdGenerator& idGenerator)
+
+    : m_Name{name}
+    , m_SharedTimer{timer}
+    , m_SharedIdGenerator{idGenerator}
+    , m_OrderBookPtr{std::make_shared<OrderBook>()}
+    , m_TickerQueuePtr{std::make_shared<MPSC>()}
+    , m_DataPtr{std::make_unique<TickerData>()}
+    , m_MakerOne{std::make_shared<Maker>("1", *(m_DataPtr), strat1, timer, idGenerator)}
+    , m_MakerTwo{std::make_shared<Maker>("2", *(m_DataPtr), strat2, timer, idGenerator)}
+{ }
 
 Ticker::~Ticker() {}
 
@@ -49,17 +53,17 @@ Quantity Ticker::GetTickerQuantity() const {return m_DataPtr->GetQuantity();}
 Quantity Ticker::GetTickerVolume() const {return m_DataPtr->GetVolume();}
 
 void Ticker::LogTrade(const TimeStamp& timeS,const OrderId& OrderID){
-    TradeLog.insert({timeS, OrderID});
+    m_TradeLog.insert({timeS, OrderID});
 }
 
 void Ticker::LogOrder(const TimeStamp& timeS, const OrderId& OrderID){
-    OrderLog.insert({timeS, OrderID});
+    m_OrderLog.insert({timeS, OrderID});
 }
 
 std::expected<TradeInfo, std::invalid_argument> Ticker::GetTradeInfo(const OrderId& OrderID) const
 {
-    auto keyValue = TradeLog.find(OrderID);
-    if (keyValue != TradeLog.end()){
+    auto keyValue = m_TradeLog.find(OrderID);
+    if (keyValue != m_TradeLog.end()){
         return keyValue->second;
     }
 
@@ -67,8 +71,8 @@ std::expected<TradeInfo, std::invalid_argument> Ticker::GetTradeInfo(const Order
 }
 
 std::expected<Order, std::invalid_argument> Ticker::GetOrderInfo(const OrderId& OrderID) const {
-    auto keyValue = OrderLog.find(OrderID); 
-    if(keyValue != OrderLog.end()){
+    auto keyValue = m_OrderLog.find(OrderID); 
+    if(keyValue != m_OrderLog.end()){
         return keyValue->second;
     }
     return std::unexpected(std::invalid_argument("OrderID not found"));

@@ -16,7 +16,7 @@
 #include <vector>
 #include <functional>
 
-using strategyFunction = Aliases::strategyFunction;
+
 
 class Exchange{
 
@@ -38,7 +38,7 @@ public:
     /**
      * 
      * @overview:Ticker number is machine based off of Processor arch
-     * My Machine: Intel i7-14700K (20 Cores, 28 LP)
+     * My Machine: Intel i7-14700K (20 Cores, 28 LPs)
      * Based off my machine the most Tickers i should use is 8
      * TickerInit initializes a ticker from of name "A"
      * 2 makers to provide liquidity: "A1",  "A2"
@@ -63,11 +63,16 @@ public:
 
 private:
 
+    //INTERFACEs
     uint64_t m_Runs;
-    std::unique_ptr<Timer> m_Clock;
-    std::shared_ptr<std::unordered_map<Symbol, std::shared_ptr<Ticker>>> m_TickerContainerPtr;
-    std::shared_ptr<std::unordered_map<Symbol, std::unique_ptr<Player>>> m_PlayerContainerPtr;
+
+    //DEPENDNCIES
+    std::shared_ptr<Timer> m_Clock;
     std::shared_ptr<IdGenerator> m_IdGenerator;
     
+    //INITALIZATIONS
+    std::shared_ptr<std::unordered_map<Symbol, std::shared_ptr<Ticker>>> m_TickerContainerPtr;
+    std::shared_ptr<std::unordered_map<Symbol, std::unique_ptr<Player>>> m_PlayerContainerPtr;
+
 };
 

@@ -18,17 +18,15 @@ class TickerData{
 public:
 
     TickerData();
-    TickerData(const TickerData&) = delete;
-    void operator=(const TickerData&) = delete;
+    TickerData(TickerData&) = delete;
+    TickerData& operator=(TickerData&) = delete;
     TickerData(const TickerData&&) = delete;
-    void operator=(const TickerData&&) = delete;
+    TickerData& operator=(const TickerData&&) = delete;
     ~TickerData();
 
     Price GetPrice() const;
     Quantity GetQuantity() const;
     Quantity GetVolume () const;
-
-
 
 private:
     Price m_Price;
@@ -38,7 +36,5 @@ private:
     void ReCalculateVolume();
     void ReCalculateQuantity();
     void TickerUpdate(const OrderBook& OrderBook);
-
-    
 
 };

@@ -1,20 +1,18 @@
 #pragma once
 
-#include "Aliases.h"
-#include "Entity/Entity.h"
-#include "Exchange/ExchangeData.h"
+#include "Aliases/Aliases.h"
 
 #include <functional>
+#include <memory>
 
-using Price = Aliases::Price;
-using Quantity = Aliases::Quantity;
-using OrderId = Aliases::OrderId;
-using Symbol = Aliases::Symbol;
-using Side = Aliases::Side;
-using Order = Aliases::Order;
-using TradeInfo = Aliases::TradeInfo;
-using Signal = Aliases::Signal;
-using strategyFuntion = Aliases::strategyFunction;
+using strategyFunction = std::functional<Signal(const ExchangeData&)>;
+
+class Entity;
+class Signal;
+class Order;
+class ExchangeData;
+class IdGenerator;
+
 
 
 
@@ -37,18 +35,14 @@ public:
     }
 
     OrderPointer OrderBuild(Signal signal , IdGenerator& id_gen){
-        if(signal.GetSignalValidity() == false) { 
-            return nullptr;
-        }
+        if(signal.GetSignalValidity() == false) { return nullptr;}
         
-
         OrderType type;
         OrderId ID = id_gen.GenerateId();
         Side side = signal.GetSignalSide();
         Price price;
         Quantity quantity;
         ActionFunction action;
-
 
         return std::make_shared<Order>(type, ID, side, price, quantity, action);
         
@@ -62,13 +56,3 @@ private:
 
 };
 
-
-/**
- * INHERITED:
- *  Symbol m_Name;
-    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_TradeLog;
-    std::unique_ptr<std::map<TimeStamp, OrderId, std::greater<OrderId>>> m_OrderLog;
-    strategyFunction m_Strategy;
-    Price m_InitCapital;
-    Price m_RemainingCapital;
- */

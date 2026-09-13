@@ -1,5 +1,12 @@
 #include "OrderBook.h"
-
+#include "Contsants.h"
+#include "LevelInfo.h"
+#include "Order.h"
+#include "Trade.h"
+#include "OrderModify.h"
+#include "OrderModify.h"
+#include "OrderBookLevelInfos.h"
+#include "Aliases.h"
 
 #include <numeric>
 #include <chrono>
@@ -29,7 +36,7 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
     ordersMap.erase(orderId);
     if(order->GetOrderSide() == Side::Sell)
     {
-        auto price = order->GetPrice();
+        auto price = order->GetOrderPrice();
         auto& orders = asksMap.at(price);
         ordersMap.erase(iterator);
         if(ordersMap.empty())
@@ -63,7 +70,7 @@ void OrderBook::OnOrderCancelled(OrderPointer order)
 
 void OrderBook::OnOrderAdded(OrderPointer order)
 {
-    UpdateLevelData(order->GetPrice(), order->GetInitialQuantity(), LevelData::Action::Add);
+    UpdateLevelData(order->GetOrderPrice(), order->GetInitialQuantity(), LevelData::Action::Add);
 }
 
 void OrderBook::OnOrderMatched(Price price, Quantity quantity, bool isFullyFilled)
@@ -196,12 +203,12 @@ Trades OrderBook::MatchOrders()
 
             }
 			trades.push_back(Trade{
-				TradeInfo{ bid->GetOrderId(), bid->GetPrice(), quantity },
-				TradeInfo{ ask->GetOrderId(), ask->GetPrice(), quantity } 
+				TradeInfo{ bid->GetOrderId(), bid->GetOrderPrice(), quantity },
+				TradeInfo{ ask->GetOrderId(), ask->GetOrderPrice(), quantity } 
 				});
 
-			OnOrderMatched(bid->GetPrice(), quantity, bid->IsFilled());
-			OnOrderMatched(ask->GetPrice(), quantity, ask->IsFilled());
+			OnOrderMatched(bid->GetOrderPrice(), quantity, bid->IsFilled());
+			OnOrderMatched(ask->GetOrderPrice(), quantity, ask->IsFilled());
         }
 
         if(bids.empty())
@@ -224,7 +231,7 @@ Trades OrderBook::MatchOrders()
         auto& order = bids.front();
         if(order->GetOrderType() == OrderType::FillAndKill)
         {
-            CancelOrder(order->GetOrderId);
+            CancelOrder(order->GetOrderId());
         }
 
     }
@@ -235,7 +242,7 @@ Trades OrderBook::MatchOrders()
         auto& order = asks.front();
         if(order->GetOrderType() == OrderType::FillAndKill)
         {
-            CancelOrder(order->GetOrderId);
+            CancelOrder(order->GetOrderId());
         }
 
     }
@@ -261,13 +268,13 @@ Trades OrderBook::AddOrder(OrderPointer order){
 
     if(order->GetOrderType() == OrderType::Market)
     {
-        if(order->GetSide() == Side::Buy && !asksMap.empty())
+        if(order->GetOrderSide() == Side::Buy && !asksMap.empty())
         {
             const auto& [worstAsk, _] = *asksMap.rbegin();
             order->ToGoodTillCancel(worstAsk);
 
         }
-        if(order->GetSide() == Side::Sell && !bidsMap.empty())
+        if(order->GetOrderSide() == Side::Sell && !bidsMap.empty())
         {
             const auto&  [worstBid, _] = *bidsMap.rbegin();
             order->ToGoodTillCancel(worstBid);
@@ -278,23 +285,23 @@ Trades OrderBook::AddOrder(OrderPointer order){
     
     }
 
-    if(order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetSide(), order->GetPrice()))
+    if(order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetOrderSide(), order->GetOrderPrice()))
         return {};
 
-    if(order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetSide(), order->GetPrice()))
+    if(order->GetOrderType() == OrderType::FillAndKill && !CanMatch(order->GetOrderSide(), order->GetOrderPrice()))
         return {};
        
     
     OrderPointers::iterator iterator;
 
-    if(order->GetSide() == Side::Buy);
+    if(order->GetOrderSide() == Side::Buy);
     {
-        auto& orders = bidsMap[order->GetPrice()];
+        auto& orders = bidsMap[order->GetOrderPrice()];
         orders.push_back(order);
         iterator = std::prev(orders.end());
     }
-    else {
-        auto& orders = asksMap[order->GetPrice()];
+    else if(order->GetOrderSide() == Side::Sell){
+        auto& orders = asksMap[order->GetOrderPrice()];
         orders.push_back(order);
         iterator = std::prev(orders.end());
 

@@ -21,11 +21,19 @@ TickerData::~TickerData(){
 }
 
 void TickerData::TickerUpdate(const OrderBook& OrderBook){
-    Price lastAsk = OrderBook.GetAsksMap().begin().front() ;
-    Price lastBid = OrderBook.GetBidsMap().begin().front() ;
+    Price lastAsk = OrderBook.GetAsksMap().begin().front();
+    Price lastBid = OrderBook.GetBidsMap().begin().front();
     m_Price = ((lastAsk + lastBid) / 2.00);
 }
 
 Price TickerData::GetPrice() const {return m_Price;}
 Quantity TickerData::GetQuantity() const {return m_Quantity;}
 Quantity TickerData::GetVolume() const {return m_Volume;}
+
+void TickerData::ReCalculateVolume(){
+
+}
+
+void TickerData::ReCalculateQuantity(){
+
+}

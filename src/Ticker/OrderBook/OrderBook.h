@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Aliases.h"
 
 #include <map>
 #include <unordered_map>
@@ -8,25 +7,20 @@
 #include <condition_variable>
 #include <mutex>
 #include <atomic>
+#include <list>
+#include <vector>
 
-using Price = Aliases::Price;
-using Quantity = Aliases::Quantity;
-using OrderId = Aliases::OrderId;
-using Symbol = Aliases::Symbol;
-using Constants = Aliases::Constants;
-using LevelInfo = Aliases::LevelInfo;
-using LevelInfos = Aliases::LevelInfos;
-using OrderBookLevelInfos = Aliases::OrderBookLevelInfos;
-using Side =  Aliases::Side;
-using OrderType = Aliases::OrderType;
-using Order = Aliases::Order;
-using OrderPointer = Aliases::OrderPointer;
-using OrderPointers =  Aliases::OrderPointers;
-using OrderIds = Aliases::OrderIds;
-using OrderModify = Aliases::OrderModify; 
-using TradeInfo = Aliases::TradeInfo;
-using Trade = Aliases::Trade;
-using Trades = Aliases::Trades;
+using Price = std::int32_t;
+using Quantity = std::uint32_t;
+using OrderId = std::uint64_t;
+using OrderPointer = std::shared_ptr<Order>;
+using OrderPointers = std::list<OrderPointer>;
+using OrderIds = std::vector<OrderId>;
+using Trades = std::vector<Trade>;
+
+class Order;
+class Trade;
+enum class Side;
 
  
 class OrderBook{
