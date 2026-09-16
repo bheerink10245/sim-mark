@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Aliases.h"
-#include "Exchange.h"
+#include "Aliases/Aliases.h"
 
 
 #include <unordered_map>
@@ -12,6 +11,8 @@
 
 
 class Exchange;
+class Ticker;
+class Player;
 
 
 class ExchangeData {
@@ -20,10 +21,14 @@ public:
 
     ExchangeData(const Exchange& exchange);
     
-    std::expected<Ticker, std::invalid_arguement> FindSpecificTicker(const Symbol& name);
-    const Ticker& GetSpecifcTicker(const Ticker& ticker);
-    Price GetSpecficTickerPrice(const Symbol& tickerName);
-    Quantity GetSpecificTickerQuantity(const Symbol& tickerName);
-    Quantity GetSpecificTickerVolume(const Symbol& tickerName);
+    bool IsTickerExist(const Symbol& name);
+    const Ticker& GetTicker(const Ticker& ticker);
+    Price GetTickerPrice(const Ticker& ticker);
+    Quantity GetTickerQuantity(const Ticker& ticker);
+    Quantity GetTickerVolume(const Ticker& ticker);
+private:
+
+    std::unordered_map<Symbol, std::shared_ptr<Ticker>> m_TickerContainer;
+    std::unordered_map<Symbol, std::unique_ptr<Player>> m_PlayerContainer
 
 };

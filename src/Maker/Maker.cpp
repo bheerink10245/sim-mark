@@ -13,8 +13,8 @@
 Maker::Maker(const Symbol& name
     , const TickerData& tickerData
     , ModelFunction strategy
-    , std::shared_ptr<const Timer> timer
-    , IdGenerator generator)
+    , const Timer& timer
+    , IdGenerator& generator)
 
     : Entity{name, 1000000.00 , timer, generator}
     , m_Strategy{std::move(strategy)}
@@ -26,9 +26,7 @@ Maker::~Maker(){
 
 }
 
-
-
-void Maker::PerformPerCLK(Ticker ticker){
+void Maker::PerformPerCLK(const TickerData& ticker){
 
     // Process Exchange Data
     // Run against model for adjustive prices
@@ -36,9 +34,12 @@ void Maker::PerformPerCLK(Ticker ticker){
 
 }
 
+Signal Maker::StrategyAPI(const TickerData& ticker){
 
 
-OrderPointer OrderBuild(Signal signal){
+}
+
+OrderPointer Maker::OrderBuild(Signal signal){
     
     if(signal.GetSignalValidity() == false) { return nullptr;}
     

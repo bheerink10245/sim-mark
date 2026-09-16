@@ -1,17 +1,26 @@
 
 #include "Ticker.h"
-  
+
+#include "Maker/Maker.h"
+#include "MPSC/MPSC.h"
+#include "System/Time/Timer.h"
+#include "System/Time/TimeStamp.h"
+#include "System/IdGenerator/IdGenerator.h"
+#include "OrderBook/OrderBook.h"
+#include "Aliases/Order.h"
+#include "Aliases/Trade.h"
+#include "TickerData.h"
 
 
 
 
-Ticker::Ticker(const Symbol& name, 
-    std::shared_ptr<const Timer> timer, 
-    IdGenerator& idGenerator)
+Ticker::Ticker(const Symbol& name
+    , const Timer& timer
+    , IdGenerator& idGenerator)
 
     : m_Name{name}
-    , m_SharedTimer{timer}
-    , m_SharedIdGenerator{idGenerator}
+    , m_Timer{timer}
+    , m_IdGenerator{idGenerator}
     , m_OrderBookPtr{std::make_shared<OrderBook>()}
     , m_TickerQueuePtr{std::make_shared<MPSC>()}
     , m_DataPtr{std::make_unique<TickerData>()}
@@ -44,6 +53,7 @@ void Ticker::PerformOrderMatch(const OrderPointer& order, OrderBook& OrderBook){
         OrderModify modOrder = OrderModify(order->GetOrderId(), order->GetOrderSide(), order->GetOrderPrice(), order->GetFilledQuantity());
         OrderBook.ModifyOrder(modOrder);
     }
+
 
 }
 

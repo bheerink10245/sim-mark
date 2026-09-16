@@ -19,8 +19,8 @@ struct OrderNode{
 class MPSC{
 public:
     MPSC();
-    MPSC(MPSC&) = delete;
-    void operator=(MPSC&) = delete;
+    MPSC(const MPSC&) = delete;
+    void operator=(const MPSC&) = delete;
     MPSC(MPSC&&) = delete;
     void operator=(MPSC&&) = delete;
     ~MPSC();

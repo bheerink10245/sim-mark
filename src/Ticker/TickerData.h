@@ -18,10 +18,10 @@ class TickerData{
 public:
 
     TickerData();
-    TickerData(TickerData&) = delete;
-    TickerData& operator=(TickerData&) = delete;
-    TickerData(const TickerData&&) = delete;
-    TickerData& operator=(const TickerData&&) = delete;
+    TickerData(const TickerData&) = delete;
+    TickerData& operator=(const TickerData&) = delete;
+    TickerData(TickerData&&) = delete;
+    TickerData& operator=(TickerData&&) = delete;
     ~TickerData();
 
     Price GetPrice() const;

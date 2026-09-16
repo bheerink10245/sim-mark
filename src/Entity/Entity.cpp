@@ -9,10 +9,14 @@
 
 
 
-Entity::Entity(const Symbol& name, Price initCapital, std::shared_ptr<const Timer> timer, IdGenerator& generator)
+Entity::Entity(const Symbol& name, 
+                Price initCapital,
+                 const Timer& timer,
+                 IdGenerator& generator)
+                 
     : m_Name{name}
-    , m_SharedTimer{timer}
-    , m_SharedIdGenerator{generator}
+    , m_Timer{timer}
+    , m_IdGenerator{generator}
     , m_InitCapital{initCapital}
     , m_RemainingCapital{initCapital}
     , m_TradeLog{std::make_unique<std::map<TimeStamp, OrderId, std::greater<OrderId>>>()}
@@ -25,8 +29,7 @@ void Entity::LogTrade(const TimeStamp& timeS,const OrderId& OrderID){
 }
 
 void Entity::LogOrder(const TimeStamp& timeS, const OrderId& OrderID){
-
-        m_OrderLog->insert({timeS, OrderID});
+    m_OrderLog->insert({timeS, OrderID});
 }
 
 std::expected<Order, std::invalid_argument> Entity::GetOrderInfo(const OrderId& OrderID) const {

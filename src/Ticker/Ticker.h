@@ -1,4 +1,4 @@
-
+`
 #pragma once
  
 #include "Aliases/Aliases.h"
@@ -24,18 +24,19 @@ class IdGenerator;
 class OrderBook;
 class TickerData;
 class Order;
-class TradeInfo;
+class OrderModify;
+class Trade;
 
 
  
 class Ticker{
 public:
  
-    Ticker(const Symbol& name, std::shared_ptr<const Timer> timer, IdGenerator& idGenerator);
+    Ticker(const Symbol& name, const Timer& timer, IdGenerator& idGenerator);
     Ticker(const Ticker&) = delete;
     Ticker& operator=(const Ticker&) = delete;
     Ticker(Ticker&&) = delete;
-    Ticker& operator=(const Ticker&&) = delete;
+    Ticker& operator=(Ticker&&) = delete;
     ~Ticker();
  
    // All Self Exlplanatory APIs
@@ -82,18 +83,16 @@ public:
     /**
      * @purpose:Add order into Ticker Queue
      */
-    void TickerEnqueue(OrderPointer order){
-        m_TickerQueuePtr->push(order);
-    }
+    void TickerEnqueue(OrderPointer order);
  
 private:
  
 
     Symbol m_Name;
 
-  
-    std::shared_ptr<const Timer> m_SharedTimer;
-    std::shared_ptr<IdGenerator> m_SharedIdGenerator;
+    //OUTSIDE DEPENDICIES
+    const Timer& m_Timer;
+    IdGenerator& m_IdGenerator;
 
     //INSIDE MEMBER VARs
     Symbol m_Name;

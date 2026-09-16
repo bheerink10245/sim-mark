@@ -17,11 +17,18 @@
 #include <functional>
 
 
+class ExchangeData;
+class Player;
+class Ticker;
+class Timer;
+class TimeStamp;
+
 
 class Exchange{
 
 public:
 
+    
 
     Exchange(const Exchange&) = delete;
     Exchange& operator=(const Exchange&) = delete;
@@ -31,10 +38,8 @@ public:
 
     Exchange(const uint64_t& runs);
 
-    /**
-     * @purpose: initilaize exchange dependencies
-     */
-    void DependencyInits();
+    ExchangeData GenerateExchangeData();
+
     /**
      * 
      * @overview:Ticker number is machine based off of Processor arch

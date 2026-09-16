@@ -19,7 +19,9 @@ using OrderIds = std::vector<OrderId>;
 using Trades = std::vector<Trade>;
 
 class Order;
+class OrderBookLevelInfos;
 class Trade;
+class OrderModify;
 enum class Side;
 
  
