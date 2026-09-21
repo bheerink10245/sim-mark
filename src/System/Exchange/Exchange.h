@@ -1,14 +1,9 @@
 #pragma once
 
-#include "Aliases.h"
-#include "Time/Timer.h"
-#include "Maker/Maker.h"
-#include "Player/Player.h"
-#include "Ticker/Ticker.h"
-#include "ExchangeData.h"
-#include "IdGenerator.h"
+#include "../../Aliases/Aliases.h"
 
-#include <unordered_map>
+#include <set>
+#include <memory>
 #include <thread> 
 #include <random>
 #include <string>
@@ -18,10 +13,13 @@
 
 
 class ExchangeData;
+class IdGenerator;
 class Player;
 class Ticker;
+class Signal;
 class Timer;
 class TimeStamp;
+using strategyFunction = std::function<Signal(const ExchangeData&)>;
 
 
 class Exchange{
@@ -29,14 +27,13 @@ class Exchange{
 public:
 
     
-
+    Exchange(const uint64_t& runs);
     Exchange(const Exchange&) = delete;
     Exchange& operator=(const Exchange&) = delete;
     Exchange(Exchange&&) = delete;
     Exchange& operator=(Exchange&&) = delete;
     ~Exchange();
 
-    Exchange(const uint64_t& runs);
 
     ExchangeData GenerateExchangeData();
 
@@ -62,7 +59,6 @@ public:
 
     void StartSimulation();
 
-    
 
 
 
@@ -76,8 +72,8 @@ private:
     std::shared_ptr<IdGenerator> m_IdGenerator;
     
     //INITALIZATIONS
-    std::shared_ptr<std::unordered_map<Symbol, std::shared_ptr<Ticker>>> m_TickerContainerPtr;
-    std::shared_ptr<std::unordered_map<Symbol, std::unique_ptr<Player>>> m_PlayerContainerPtr;
+    std::vector<std::shared_ptr<Ticker>> m_TickerContainer;
+    std::vector<std::unique_ptr<Player>> m_PlayerContainer;
 
 };
 

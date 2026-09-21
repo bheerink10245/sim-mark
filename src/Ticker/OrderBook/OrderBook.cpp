@@ -1,23 +1,68 @@
+
 #include "OrderBook.h"
-#include "Contsants.h"
-#include "LevelInfo.h"
-#include "Order.h"
-#include "Trade.h"
-#include "OrderModify.h"
-#include "OrderModify.h"
-#include "OrderBookLevelInfos.h"
-#include "Aliases.h"
+
+#include "../../Aliases/Contsants.h"
+#include "../../Aliases/LevelInfo.h"
+#include "../../Aliases/Order.h"
+#include "../../Aliases/Trade.h"
+#include "../../Aliases/OrderModify.h"
+#include "../../Aliases/OrderBookLevelInfos.h"
+
 
 #include <numeric>
 #include <chrono>
 #include <ctime>
 #include <optional>
 
-
+// Modify for clock
 void OrderBook::PruneGoodForDayOrders()
 {
 
-    
+    using namespace std::chrono;
+    const auto end = hours(16);
+
+	while (true)
+	{
+		const auto now = system_clock::now();
+		const auto now_c = system_clock::to_time_t(now);
+		std::tm now_parts;
+		localtime_s(&now_parts, &now_c);
+
+		if (now_parts.tm_hour >= end.count())
+			now_parts.tm_mday += 1;
+
+		now_parts.tm_hour = end.count();
+		now_parts.tm_min = 0;
+		now_parts.tm_sec = 0;
+
+		auto next = system_clock::from_time_t(mktime(&now_parts));
+		auto till = next - now + milliseconds(100);
+
+		{
+			std::unique_lock ordersLock{ ordersMutex };
+
+			if (shutdownVariable.load(std::memory_order_acquire) || shutdownCondtionVariables.wait_for(ordersLock, till) == std::cv_status::no_timeout)
+				return;
+		}
+
+		OrderIds orderIds;
+
+		{
+			std::scoped_lock ordersLock{ ordersMutex };
+
+			for (const auto& [_, entry] : ordersMap)
+			{
+				const auto& [order, _] = entry;
+
+				if (order->GetOrderType() != OrderType::GoodForDay)
+					continue;
+
+				orderIds.push_back(order->GetOrderId());
+			}
+		}
+
+		CancelOrder(orderIds);
+	}
 }
 
 void OrderBook::CancelOrder(OrderIds orderIds)
@@ -30,7 +75,7 @@ void OrderBook::CancelOrder(OrderIds orderIds)
 
 void OrderBook::CancelOrderInternal(OrderId orderId)
 {
-    if(!ordersMap.contains(orderId))
+    if(!(ordersMap.contains(orderId)))
         return;
     const auto [order, iterator] = ordersMap.at(orderId);
     ordersMap.erase(orderId);
@@ -38,10 +83,10 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
     {
         auto price = order->GetOrderPrice();
         auto& orders = asksMap.at(price);
-        ordersMap.erase(iterator);
-        if(ordersMap.empty())
+        orders.erase(iterator);
+        if(orders.empty())
         {
-            bidsMap.erase(price);
+            asksMap.erase(price);
         }
 
     }
@@ -51,16 +96,13 @@ void OrderBook::CancelOrderInternal(OrderId orderId)
         orders.erase(iterator);
         if(orders.empty())
         {
-            bidsMap.empty();
+            bidsMap.erase(price);
         }
     }
 
     OnOrderCancelled(order);
     
 }
-
-
-
 
 void OrderBook::OnOrderCancelled(OrderPointer order)
 {
@@ -78,14 +120,11 @@ void OrderBook::OnOrderMatched(Price price, Quantity quantity, bool isFullyFille
     UpdateLevelData(price, quantity, isFullyFilled ? LevelData::Action::Remove : LevelData::Action::Match);
 }
 
-
-
-
 void OrderBook::UpdateLevelData(Price price, Quantity quantity, LevelData::Action action)
 {
     auto& data = dataMap[price];
 
-    dataMap.m_count += action == LevelData::Action::Remove ? LevelData::Action::Remove : LevelData::Action::Match;
+	data.m_count += action == LevelData::Action::Remove ? -1 : action == LevelData::Action::Add ? 1 : 0;
     if(action == LevelData::Action::Remove || action == LevelData::Action::Match)
     {
         data.m_quantity -= quantity;
@@ -97,7 +136,6 @@ void OrderBook::UpdateLevelData(Price price, Quantity quantity, LevelData::Actio
     if(data.m_count = 0)
         dataMap.erase(price);
     
-
 }
 
 bool OrderBook::CanFullyFill(Side side, Price price, Quantity quantity) const
@@ -160,8 +198,6 @@ bool OrderBook::CanMatch(Side side, Price price) const
     }
 
 }
-
-
 
 Trades OrderBook::MatchOrders()
 {
@@ -294,13 +330,13 @@ Trades OrderBook::AddOrder(OrderPointer order){
     
     OrderPointers::iterator iterator;
 
-    if(order->GetOrderSide() == Side::Buy);
+    if(order->GetOrderSide() == Side::Buy)
     {
         auto& orders = bidsMap[order->GetOrderPrice()];
         orders.push_back(order);
         iterator = std::prev(orders.end());
     }
-    else if(order->GetOrderSide() == Side::Sell){
+    else {
         auto& orders = asksMap[order->GetOrderPrice()];
         orders.push_back(order);
         iterator = std::prev(orders.end());
@@ -327,7 +363,7 @@ Trades OrderBook::ModifyOrder(OrderModify order)
 	OrderType orderType;
 
 	{
-		std::scoped_lock ordersLock{ ordersMutex };
+		std::scoped_lock ordersLock { ordersMutex };
 
 		if (!ordersMap.contains(order.GetOrderId()))
 			return { };
@@ -337,7 +373,7 @@ Trades OrderBook::ModifyOrder(OrderModify order)
 	}
 
 	CancelOrder(order.GetOrderId());
-	return AddOrder(order.ToOrderPointer(order));
+	return AddOrder(order.ToOrderPointer(orderType));
 }
 
 size_t OrderBook::Size() const

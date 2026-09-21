@@ -1,17 +1,17 @@
 
-#include "Entity/Entity.h"
+#include "../Entity/Entity.h"
 #include "Player.h"
-#include "Aliases/Signal.h"
-#include "Aliases/Order.h"
-#include "System/Exchange/ExchangeData.h"
-#include "System/IdGenerator/IdGenerator.h"
+#include "../Aliases/Signal.h"
+#include "../Aliases/Order.h"
+#include "../System/Exchange/ExchangeData.h"
+#include "../System/IdGenerator/IdGenerator.h"
 
 Player::Player(const Symbol& name
-            , strategyFunction strategy
-            , const Timer& timer
-            , IdGenerator& generator)
-            
-    : Entity{name, 100000.00 , timer, generator}
+        , const Timer& timer
+        , IdGenerator& generator
+        , strategyFunction strategy)   
+          
+    : Entity{name , timer, generator, 1000000}
     , m_Strategy{std::move(strategy)}
 
 {  }
@@ -24,12 +24,13 @@ Player::~Player(){
 
 void Player::PerformPerCLK(const ExchangeData& data){
 
-
+    Signal clk_signal = StrategyAPI(data);
+    OrderPointer clk_build = OrderBuild(clk_signal);
 
 }
 
 Signal Player::StrategyAPI(const ExchangeData& data){
-
+    return m_Strategy(data);
 }
 
 OrderPointer Player::OrderBuild(Signal signal){

@@ -1,43 +1,52 @@
-#pragma once
 
+#pragma once 
 
-#include "Aliases/Aliases.h"
+#include "../Aliases/Aliases.h"
+#include "../System/Time/TimeStamp.h"
 
 #include <map>
 #include <expected>
 #include <stdexcept>
 #include <memory>
 
+class Order;
 class IdGenerator;
 class TimeStamp;
 class Timer;
 class TradeInfo;
 
+
+
 class Entity {
 public:
 
     Entity(const Symbol& name, 
-                Price initCapital,
-                 const Timer& timer,
-                 IdGenerator& generator)
+                const Timer& timer,
+                IdGenerator& generator,
+                Price initCapital);
 
-    std::expected<Order, std::invalid_argument> GetOrderInfo(const OrderId& OrderID) const;
-    std::expected<TradeInfo, std::invalid_argument> GetTradeInfo(const OrderId& OrderID) const;
+
+                
+    virtual ~Entity() = default;
+
+    std::expected<OrderId, OrderError> GetOrderInfo(const OrderId& ID) const;
+    std::expected<OrderId, OrderError> GetTradeInfo(const OrderId& ID) const;
     void LogTrade(const TimeStamp& ts, const OrderId& ID);
     void LogOrder(const TimeStamp& ts, const OrderId& ID);
-    Price GetPnL() const {return m_InitCapital - m_RemainingCapital;}
+    inline Price GetPnL() const {return m_InitCapital - m_RemainingCapital;}
 
 protected:
-    // OUTSIDE DEPENDICIES
+
+    Symbol m_Name;
+
     const Timer& m_Timer;
     IdGenerator& m_IdGenerator;
 
-    //INSIDE MEMBER VARs
-    Symbol m_Name;
-    std::unique_ptr<std::multimap<TimeStamp, OrderId, std::greater<OrderId>>> m_TradeLog;
-    std::unique_ptr<std::multimap<TimeStamp, OrderId, std::greater<OrderId>>> m_OrderLog;
     Price m_InitCapital;
     Price m_RemainingCapital;
+
+    std::multimap<OrderId, TimeStamp, std::greater<OrderId>> m_TradeLog;
+    std::multimap<OrderId, TimeStamp, std::greater<OrderId>> m_OrderLog;
 
     
 };

@@ -1,13 +1,15 @@
 #pragma once
 
+#include "Aliases.h"
 
-using Price = std::int32_t;
-using Quantity = std::uint32_t;
-using OrderId = std::uint64_t;
+#include <list>
+#include <memory>
+#include <cstdint>
 
 enum class Side;
 enum class OrderType;
 enum class ActionFunction;
+
 
 class Order
 {
@@ -28,6 +30,7 @@ public:
     Quantity GetFilledQuantity() const; 
     bool IsFilled() const; 
 
+
     void Fill(Quantity quantity);
 
     void ToGoodTillCancel(Price price);
@@ -42,3 +45,6 @@ private:
     Quantity m_RemainingQuantity;
     ActionFunction m_Action;
 };
+
+using OrderPointer = std::shared_ptr<Order>;
+using OrderPointers = std::list<OrderPointer>;

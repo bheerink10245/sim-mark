@@ -2,50 +2,55 @@
 
 #include "Entity.h"
 
-#include "System/Time/Timer.h"
-#include "System/Time/TimeStamp.h"
-#include "System/IdGenerator/IdGenerator.h"
-#include "Aliases/Trade.h"
+#include "../Aliases/Trade.h"
+#include "../Aliases/Order.h"
+#include "../System/Time/Timer.h"
+#include "../System/Time/TimeStamp.h"
+#include "../Maker/Maker.h"
+#include "../Player/Player.h"
+#include "../Ticker/Ticker.h"
+#include "../System/Exchange/ExchangeData.h"
+#include "../System/IdGenerator/IdGenerator.h"
+
 
 
 
 Entity::Entity(const Symbol& name, 
-                Price initCapital,
-                 const Timer& timer,
-                 IdGenerator& generator)
+                const Timer& timer,
+                IdGenerator& generator,
+                Price initCapital)
                  
     : m_Name{name}
     , m_Timer{timer}
     , m_IdGenerator{generator}
     , m_InitCapital{initCapital}
     , m_RemainingCapital{initCapital}
-    , m_TradeLog{std::make_unique<std::map<TimeStamp, OrderId, std::greater<OrderId>>>()}
-    , m_OrderLog{std::make_unique<std::map<TimeStamp, OrderId, std::greater<OrderId>>>()}
-
+    , m_TradeLog{}
+    , m_OrderLog{}
 { }
 
-void Entity::LogTrade(const TimeStamp& timeS,const OrderId& OrderID){
-    m_TradeLog->insert({timeS, OrderID});
+void Entity::LogTrade(const TimeStamp& ts,const OrderId& ID){
+    m_TradeLog.insert({ID , ts});
 }
 
-void Entity::LogOrder(const TimeStamp& timeS, const OrderId& OrderID){
-    m_OrderLog->insert({timeS, OrderID});
+void Entity::LogOrder(const TimeStamp& ts, const OrderId& ID){
+    m_OrderLog.insert({ID , ts});
 }
 
-std::expected<Order, std::invalid_argument> Entity::GetOrderInfo(const OrderId& OrderID) const {
-    auto keyValue = m_OrderLog->find(OrderID);
-    if(keyValue != m_OrderLog->end()){
-        return keyValue->second;
+std::expected<OrderId, OrderError> Entity::GetOrderInfo(const OrderId& ID) const {
+    auto keyValue = m_OrderLog.find(ID);
+    if(keyValue != m_OrderLog.end()){
+        return keyValue->first;
     }
-    return std::unexpected(std::invalid_argument("OrderID not found"));
+    return std::unexpected(OrderError::NotFound);
 }
 
-std::expected<TradeInfo, std::invalid_argument> Entity::GetTradeInfo(const OrderId& OrderID) const
-{
-    auto keyValue = m_TradeLog->find(OrderID);
-    if (keyValue != m_TradeLog->end()){
-        return keyValue->second;
+std::expected<OrderId, OrderError> Entity::GetTradeInfo(const OrderId& ID) const {
+    auto keyValue = m_TradeLog.find(ID);
+    if (keyValue != m_TradeLog.end()){
+        return keyValue->first;
     }
 
-    return std::unexpected(std::invalid_argument("OrderID not found"));
+    return std::unexpected(OrderError::NotFound);
 }
+

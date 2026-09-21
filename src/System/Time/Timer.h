@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Aliases.h"
-#include "TimeStamp.h"
+#include "../../Aliases/Aliases.h"
+
 
 #include <chrono>
 #include <ctime>
 
+class TimeStamp;
 
 class Timer{
 public:
@@ -21,7 +22,9 @@ public:
     unsigned long long GetIterationCount() const {return m_IterationCount;}
     
 private:
-    std::chrono::steady_clock::time_point m_Start;
+
     unsigned long long m_IterationCount; 
+    std::chrono::steady_clock::time_point m_Start;
+
 
 };

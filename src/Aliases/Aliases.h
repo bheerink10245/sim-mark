@@ -1,16 +1,14 @@
 #pragma once 
 
 #include <string>
-#include <list>
-#include <memory>
 #include <vector>
 #include <cstdint>
-
 
 using Price = std::int32_t;
 using Quantity = std::uint32_t;
 using OrderId = std::uint64_t;
 using Symbol = std::string;
+using OrderIds = std::vector<OrderId>;
 
 enum class Side
 {
@@ -37,11 +35,25 @@ enum class ActionFunction
     Default
 };
 
+enum class OrderError
+{
+    Invalid,
+    NotFound
+};
 
-using OrderPointer = std::shared_ptr<Order>;
-using OrderPointers = std::list<OrderPointer>;
-using OrderIds = std::vector<OrderId>;
+enum class TickerError
+{
+    Invalid,
+    NotFound
+};
 
+enum class OrderStatus
+{
+    Recieved,
+    Steady,
+    Unfillable,
+    Filled
+};
 
 
 

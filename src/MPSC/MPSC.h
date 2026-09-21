@@ -1,20 +1,22 @@
 #pragma once
 
-#include "Aliases/Aliases.h"
+#include "../Aliases/Aliases.h"
+#include "../Aliases/Order.h"
 
 #include <atomic>
 #include <memory>
 
-
 class Order;
+using OrderPointer = std::shared_ptr<Order>;
+
 
 struct OrderNode{
+    OrderNode() = default;
     OrderNode(const OrderPointer& Order) : NodeValue{Order} {}
-    std::atomic<OrderNode*> NextNode;
+    std::atomic<OrderNode*> NextNode{nullptr};
     OrderPointer NodeValue;
 };
 
-//Vyukov Queue
 
 class MPSC{
 public:

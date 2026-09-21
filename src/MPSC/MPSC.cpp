@@ -3,7 +3,7 @@
 
 #include "MPSC.h"
 
-#include "Aliases/Order.h"
+#include "../Aliases/Order.h"
 
 MPSC::MPSC() 
     : Stub{new OrderNode()}, 
@@ -17,14 +17,14 @@ MPSC::MPSC()
 
 MPSC::~MPSC(){
 
-    
+    return;
 }
 
 void MPSC::push(OrderPointer Order){
-    OrderNode Ordernode = OrderNode(Order);
-    Ordernode->NextNode.store(nullptr, std::memory_order_relaxed);
-    Ordernode* prev = TailNode.exchange(Ordernode, std::memory_order_acq_rel);
-    prev->NextNode.store(Ordernode, std::memory_order_release);
+    OrderNode* order_node = new OrderNode(Order);
+    order_node->NextNode.store(nullptr, std::memory_order_relaxed);
+    OrderNode* prev = TailNode.exchange(order_node, std::memory_order_acq_rel);
+    prev->NextNode.store(order_node, std::memory_order_release);
 
 }
 

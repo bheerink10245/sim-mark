@@ -6,9 +6,7 @@
 Timer::Timer(const unsigned long long& iterCount) 
     : m_IterationCount{iterCount}, 
     m_Start{}
-{}
-
-
+{ }
 
 void Timer::CLK() {m_IterationCount++;}
 

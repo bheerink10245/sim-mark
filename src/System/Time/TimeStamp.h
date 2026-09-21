@@ -1,11 +1,12 @@
 #pragma once
 
-#include <utility>
+
 #include <chrono>
 #include <ctime>
 
 
 class TimeStamp{
+
     std::chrono::milliseconds m_Value;
     
 public:
@@ -16,7 +17,8 @@ public:
     TimeStamp(TimeStamp&& other) noexcept;
     TimeStamp& operator=(TimeStamp&& other) noexcept;
 
+    auto operator<=>(const TimeStamp&) const;
 
-    std::chrono::milliseconds GetTimeStampValue() const {return m_Value;}
+    inline std::chrono::milliseconds GetTimeStampValue() const {return m_Value;}
 
 };

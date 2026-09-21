@@ -1,6 +1,8 @@
 #pragma once
 
 
+#include "../../Aliases/Aliases.h"
+
 #include <map>
 #include <unordered_map>
 #include <thread>
@@ -10,19 +12,18 @@
 #include <list>
 #include <vector>
 
-using Price = std::int32_t;
-using Quantity = std::uint32_t;
-using OrderId = std::uint64_t;
-using OrderPointer = std::shared_ptr<Order>;
-using OrderPointers = std::list<OrderPointer>;
-using OrderIds = std::vector<OrderId>;
-using Trades = std::vector<Trade>;
 
 class Order;
 class OrderBookLevelInfos;
 class Trade;
 class OrderModify;
+class Constant;
 enum class Side;
+
+using OrderIds = std::vector<OrderId>;
+using Trades = std::vector<Trade>;
+using OrderPointer = std::shared_ptr<Order>;
+using OrderPointers = std::list<OrderPointer>;
 
  
 class OrderBook{
@@ -59,15 +60,12 @@ private:
     std::atomic<bool> shutdownVariable{false};
 
     void PruneGoodForDayOrders();
-
     void CancelOrder(OrderIds orderIds);
     void CancelOrderInternal(OrderId orderId);
-
     void OnOrderCancelled(OrderPointer order);
     void OnOrderAdded(OrderPointer order);
     void OnOrderMatched(Price price, Quantity quantity, bool isFullyFilled);
     void UpdateLevelData(Price price, Quantity quantity, LevelData::Action action);
-
     bool CanFullyFill(Side side, Price price, Quantity quantity) const;
     bool CanMatch(Side side, Price price) const;
     Trades MatchOrders();
@@ -80,7 +78,6 @@ public:
     OrderBook(OrderBook&&) = delete;
     void operator=(OrderBook&&) = delete;
     ~OrderBook();
-
 
     //ACTION FUNCTIONS
     Trades AddOrder(OrderPointer order);

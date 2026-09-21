@@ -1,10 +1,10 @@
-`
+
 #pragma once
  
-#include "Aliases/Aliases.h"
+#include "../Aliases/Aliases.h"
 
  
- 
+
 #include <iostream>
 #include <vector>
 #include <random>
@@ -20,13 +20,17 @@ class Maker;
 class MPSC;
 class Timer;
 class TimeStamp;
+class Signal;
 class IdGenerator;
 class OrderBook;
 class TickerData;
 class Order;
 class OrderModify;
 class Trade;
-
+class TradeInfo;
+enum class TickerError;
+using OrderPointer = std::shared_ptr<Order>;
+using ModelFunction = std::function<Signal(const TickerData&)>;
 
  
 class Ticker{
@@ -45,45 +49,20 @@ public:
     Quantity GetTickerQuantity() const;
     Quantity GetTickerVolume() const ;
     
-    /**
-    * @purpose: This is what the object will peform each exhcange iteration
-    */
+
     void PerformPerCLK();
-    /**
-     * @purpose:
-     * @param: Order thats being processed
-     * @param: Orderbook of the ticker. It is a derefrecned pointer of the tickers Orderbook
-     * @returns: Result of the order processing
-     */
-    void PerformOrderMatch(const OrderPointer& order, OrderBook& OrderBook);
-    /**
-     * @purpose: Log a Trade action of ticker.
-     * @param timeS: is a TimeStamp obj created by running Timer.SnapShot() , returns a TimeStamp value.
-     * @param OrderId: is the ID of the  TRADE thats getting logged
-     */
-    void LogTrade(const TimeStamp& timeS, const OrderId& OrderID);
-    /** 
-     * @purpose: Log an ORDER action of ticker.
-     * @param timeS: is a TimeStamp obj created by running Timer.SnapShot() , returns a TimeStamp value.
-     * @param OrderId: is the ID of the ORDER thats getting logged
-     */
-    void LogOrder(const TimeStamp& timeS, const OrderId& OrderID);
-    /**
-     * @purpose: Get information on a Trade that was processed on ticker
-     * @param: ID of Trade attempting to find
-     * @returns: Either TradeInfo if OrderID value existed within TradeLog, returns invalid arguement if not.
-     */
-    std::expected<TradeInfo, std::invalid_argument> GetTradeInfo(const OrderId& OrderID) const;
-    /**
-     * @purpose: Get information on an Order that was processed on ticker
-     * @param: ID of Order attempting to find
-     * @returns: Either Order if OrderID value existed within TradeLog, returns invalid arguement if not.
-     */
-    std::expected<Order, std::invalid_argument> GetOrderInfo(const OrderId& OrderID) const;
-    /**
-     * @purpose:Add order into Ticker Queue
-     */
-    void TickerEnqueue(OrderPointer order);
+
+    OrderStatus PerformOrderMatch(const std::shared_ptr<Order>& order, OrderBook& OrderBook);
+
+    void LogTrade(const OrderId& ID, const TimeStamp& ts);
+
+    void LogOrder(const OrderId& ID, const TimeStamp& ts);
+
+    std::expected<OrderId, TickerError> GetTradeInfo(const OrderId& ID) const;
+
+    std::expected<OrderId, TickerError> GetOrderInfo(const OrderId& ID) const;
+
+    OrderStatus TickerEnqueue(OrderPointer order);
  
 private:
  
@@ -95,7 +74,7 @@ private:
     IdGenerator& m_IdGenerator;
 
     //INSIDE MEMBER VARs
-    Symbol m_Name;
+
     std::unique_ptr<OrderBook> m_OrderBookPtr;
     std::shared_ptr<MPSC> m_TickerQueuePtr;
     std::unique_ptr<TickerData> m_DataPtr;
@@ -106,8 +85,8 @@ private:
     std::shared_ptr<Maker> m_MakerOne;
     std::shared_ptr<Maker> m_MakerTwo;
 
-    std::map<TimeStamp, OrderId, std::greater<TimeStamp>> m_TradeLog;
-    std::map<TimeStamp, OrderId, std::greater<TimeStamp>> m_OrderLog;
+    std::map<OrderId, TimeStamp, std::greater<TimeStamp>> m_TradeLog;
+    std::map<OrderId, TimeStamp, std::greater<TimeStamp>> m_OrderLog;
 
 };
  

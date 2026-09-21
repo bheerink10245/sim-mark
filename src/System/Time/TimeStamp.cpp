@@ -2,7 +2,7 @@
 #include "Timestamp.h"
 
 
-explicit TimeStamp::TimeStamp(std::chrono::milliseconds timePoint) 
+TimeStamp::TimeStamp(std::chrono::milliseconds timePoint) 
     : m_Value{timePoint} 
     {}
 
@@ -29,3 +29,5 @@ TimeStamp& TimeStamp::operator=(TimeStamp&& other) noexcept{
 
     return *this;
 }
+
+auto TimeStamp::operator<=>(const TimeStamp& other) const = default;

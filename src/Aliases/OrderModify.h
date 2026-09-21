@@ -25,7 +25,7 @@ public:
 
     OrderModify(OrderId orderId, Side side, Price price, Quantity quantity);
 
-    OrderPointer ToOrderPointer(Order order);
+    OrderPointer ToOrderPointer(OrderType type);
 
     OrderId GetOrderId() const;
     Side GetOrderSide() const;

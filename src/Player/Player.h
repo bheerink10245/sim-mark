@@ -1,17 +1,19 @@
 #pragma once
 
-#include "Aliases/Aliases.h"
-#include "Entity/Entity.h"
+#include "../Aliases/Aliases.h"
+
 #include <functional>
 #include <memory>
 
-using strategyFunction = std::function<Signal(const ExchangeData&)>;
 
 class Entity;
 class Signal;
 class Order;
+using OrderPointer = std::shared_ptr<Order>;
 class ExchangeData;
 class IdGenerator;
+using strategyFunction = std::function<Signal(const ExchangeData&)>;
+
 
 
 
@@ -21,13 +23,14 @@ class Player : public Entity {
 public:
 
     Player(const Symbol& name
-            , strategyFunction strategy
-            , const Timer& timer
-            , IdGenerator& generator);
+        , const Timer& timer
+        , IdGenerator& generator
+        , strategyFunction strategy);
+        
     Player(const Player&) = delete;
-    Player& operator=(const Player&) = delete;
+    void operator=(const Player&) = delete;
     Player(Player&&) = delete;
-    Player&& operator=(Player&&) = delete;
+    void operator=(Player&&) = delete;
     ~Player();
 
     void PerformPerCLK(const ExchangeData& data);

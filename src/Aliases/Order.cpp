@@ -38,15 +38,15 @@ bool Order::IsFilled() const { return GetRemainingQuantity() == 0; }
 
 void Order::Fill(Quantity quantity){
     if (quantity > GetRemainingQuantity())
-        throw std::logic_error("Order cannot be filled for more than its remaining quantity.", GetOrderId());
+        throw std::logic_error("Order (" + std::to_string(GetOrderId()) +") cannot be filled for more than its remaining quantity.");
 
     m_RemainingQuantity -= quantity;
 }
 
 void Order::ToGoodTillCancel(Price price) { 
     if (GetOrderType() != OrderType::Market)
-        throw std::logic_error("Order cannot have its price adjusted, only market orders can.", GetOrderId());
-
+        throw std::logic_error("Order (" + std::to_string(GetOrderId()) + ") cannot have its price adjusted, only market orders can."
+);
     m_Price = price;
     m_OrderType = OrderType::GoodTillCancel;
 }

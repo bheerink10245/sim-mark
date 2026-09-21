@@ -13,8 +13,8 @@ OrderModify::OrderModify(OrderId orderId, Side side, Price price, Quantity quant
     ,    orderQuantity{quantity}
 { }
 
-OrderPointer OrderModify::ToOrderPointer(Order order) {
-    return std::make_shared<Order>(orderId, orderSide,orderQuantity);
+OrderPointer OrderModify::ToOrderPointer(OrderType type) {
+    return std::make_shared<Order>(type, GetOrderId(), GetOrderSide(), GetOrderPrice() , GetOrderQuantity() );
 }
 
 OrderId OrderModify::GetOrderId() const {return orderId;}

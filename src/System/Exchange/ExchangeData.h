@@ -1,34 +1,33 @@
 #pragma once
 
-#include "Aliases/Aliases.h"
+#include "../../Aliases/Aliases.h"
+#include "Exchange.h"
 
-
-#include <unordered_map>
 #include <vector>
+#include <memory>
 #include <expected>
-#include <stdexcept>
 #include <functional>
 
 
 class Exchange;
 class Ticker;
 class Player;
-
+using TickerContainer = std::vector<std::shared_ptr<Ticker>>;
+using PlayerContainer = std::vector<std::unique_ptr<Player>>;
 
 class ExchangeData {
 
 public:
 
-    ExchangeData(const Exchange& exchange);
+    ExchangeData() = delete;
+    ExchangeData(const TickerContainer& tContainer);
     
     bool IsTickerExist(const Symbol& name);
-    const Ticker& GetTicker(const Ticker& ticker);
-    Price GetTickerPrice(const Ticker& ticker);
-    Quantity GetTickerQuantity(const Ticker& ticker);
-    Quantity GetTickerVolume(const Ticker& ticker);
-private:
+    std::expected<Price, TickerError> GetTickerPrice(const Ticker& ticker);
+    std::expected<Quantity, TickerError> GetTickerQuantity(const Ticker& ticker);
+    std::expected<Quantity, TickerError> GetTickerVolume(const Ticker& ticker);
 
-    std::unordered_map<Symbol, std::shared_ptr<Ticker>> m_TickerContainer;
-    std::unordered_map<Symbol, std::unique_ptr<Player>> m_PlayerContainer
+private:
+    std::vector<std::shared_ptr<Ticker>> tempTicker; 
 
 };
