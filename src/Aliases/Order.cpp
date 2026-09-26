@@ -45,8 +45,7 @@ void Order::Fill(Quantity quantity){
 
 void Order::ToGoodTillCancel(Price price) { 
     if (GetOrderType() != OrderType::Market)
-        throw std::logic_error("Order (" + std::to_string(GetOrderId()) + ") cannot have its price adjusted, only market orders can."
-);
+        throw std::logic_error("Order (" + std::to_string(GetOrderId()) + ") cannot have its price adjusted, only market orders can.");
     m_Price = price;
     m_OrderType = OrderType::GoodTillCancel;
 }

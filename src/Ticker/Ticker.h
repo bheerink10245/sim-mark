@@ -74,7 +74,6 @@ private:
     IdGenerator& m_IdGenerator;
 
     //INSIDE MEMBER VARs
-
     std::unique_ptr<OrderBook> m_OrderBookPtr;
     std::shared_ptr<MPSC> m_TickerQueuePtr;
     std::unique_ptr<TickerData> m_DataPtr;

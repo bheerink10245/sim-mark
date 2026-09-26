@@ -34,14 +34,15 @@ Ticker::Ticker(const Symbol& name
 Ticker::~Ticker() {}
 
 void Ticker::PerformPerCLK(){
-    OrderPointer NEXT_Order = m_TickerQueuePtr->pop();
+    // Take from Ticker Queue
     // Makers need to be fed data 
     //Makers need to make liquidity adjustment
     //Allow makers into Queue
-    auto status = PerformOrderMatch(NEXT_Order, *(m_OrderBookPtr));   
+    // Perform order match via auto at OrderStatus auto 
     // Respond to exchange with status update. Exchange handles owner comms
-    //Add Logging Data and Feedback from PerformOrderMatch                                                        
-    m_DataPtr->TickerUpdate(*(m_OrderBookPtr));                                                                                                                                  
+    //Add Logging Data and Feedback from PerformOrderMatch  
+
+    m_DataPtr->TickerUpdate(*(m_OrderBookPtr)); // update tickers data                                                                                                                       
 } 
 
 OrderStatus Ticker::PerformOrderMatch(const std::shared_ptr<Order>& order, OrderBook& OrderBook){

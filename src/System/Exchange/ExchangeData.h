@@ -12,8 +12,8 @@
 class Exchange;
 class Ticker;
 class Player;
-using TickerContainer = std::vector<std::shared_ptr<Ticker>>;
-using PlayerContainer = std::vector<std::unique_ptr<Player>>;
+using TickerContainer = std::vector<Ticker>;
+using PlayerContainer = std::vector<Player>;
 
 class ExchangeData {
 
@@ -28,6 +28,6 @@ public:
     std::expected<Quantity, TickerError> GetTickerVolume(const Ticker& ticker);
 
 private:
-    std::vector<std::shared_ptr<Ticker>> tempTicker; 
+
 
 };

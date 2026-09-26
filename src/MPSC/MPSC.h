@@ -20,7 +20,7 @@ public:
 
 private:
 
-    static constexpr size_t capacity = 2056;
+    static constexpr size_t capacity = 65536; // 2^16
     static constexpr size_t maxIndexMask = capacity -1;
 
     alignas(64) std::atomic<size_t> readIndex{0};

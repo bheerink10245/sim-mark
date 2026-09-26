@@ -14,6 +14,8 @@
 #include <memory>
 
 
+
+
 Exchange::Exchange(const uint64_t& runs) 
     : m_Runs{runs}
     , m_Clock{std::make_shared<Timer>(0)}
@@ -40,7 +42,7 @@ void Exchange::TickerInit(uint8_t tickerNums){
     while(tickerNums > t_count){
 
         Symbol charName = charset.at(t_count);
-        m_TickerContainer.emplace_back(std::make_shared<Ticker>(charName, *(m_Clock) , *(m_IdGenerator) ));
+        m_TickerContainer.emplace_back(charName, *(m_Clock) , *(m_IdGenerator) );
         t_count++;
         
     }
@@ -58,7 +60,7 @@ void Exchange::PlayerInit(uint32_t playerNums, std::vector<strategyFunction> fun
     while(playerNums > p_count){
 
         Symbol charName = charset.at(p_count);
-        m_PlayerContainer.emplace_back(std::make_unique<Player>(charName,*(m_Clock), *(m_IdGenerator), std::move(functors.at(p_count))));
+        m_PlayerContainer.emplace_back(charName,*(m_Clock), *(m_IdGenerator), std::move(functors.at(p_count)));
         p_count++;
 
     }
@@ -66,12 +68,28 @@ void Exchange::PlayerInit(uint32_t playerNums, std::vector<strategyFunction> fun
 }
 
 void Exchange::StartSimulation(){
+    std::cout << "[-----Spawning thread container-----]" << std::endl;
 
+    for(auto& ticker : m_TickerContainer){
+        m_Threads.emplace_back(&Ticker::PerformPerCLK, &ticker);
+    }
+
+    for(auto& player: m_PlayerContainer){
+        m_Threads.emplace_back(&Player::PerformPerCLK, &player);
+    }
+
+    std::cout << "[------Thread container filled------]" << std::endl;
     
+    std::cout << "[-------Starting Simulation---------]" << std::endl;
+
+    // Actual Simulation
     while(m_Clock->GetIterationCount() < m_Runs){
 
+        for(auto& t : m_Threads){
+            t.join();
+        }
         
-        
+        ExchangeData iteration_data = GenerateExchangeData();
 
         m_Clock->CLK();
     }

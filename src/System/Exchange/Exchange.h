@@ -41,10 +41,7 @@ public:
      * 
      * @overview:Ticker number is machine based off of Processor arch
      * My Machine: Intel i7-14700K (20 Cores, 28 LPs)
-     * Based off my machine the most Tickers i should use is 8
-     * TickerInit initializes a ticker from of name "A"
-     * 2 makers to provide liquidity: "A1",  "A2"
-     * @purpose: initlaizes all tickers and their respective liquidity. Constructs into object m_TickerContainer
+     * @purpose: initlaizes all tickers and thei respective liquidity. Constructs into object m_TickerContainer
      * @param: tickerNums, number of tickers you want to create
      */
     void TickerInit(uint8_t tickerNums);
@@ -72,8 +69,9 @@ private:
     std::shared_ptr<IdGenerator> m_IdGenerator;
     
     //INITALIZATIONS
-    std::vector<std::shared_ptr<Ticker>> m_TickerContainer;
-    std::vector<std::unique_ptr<Player>> m_PlayerContainer;
-
+    std::vector<Player> m_TickerContainer;
+    std::vector<Player> m_PlayerContainer;
+    
+    std::vector<std::thread> m_Threads;
 };
 
